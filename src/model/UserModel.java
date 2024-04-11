@@ -1,5 +1,7 @@
 package model;
 
+
+
 public class UserModel {
 	
 	int id;
@@ -26,10 +28,7 @@ public class UserModel {
 		this.password = password;
 		this.isAdmin = isAdmin;
 	}
-	 public static UserModel getInstance() {
-	        return getInstance();
-	    }
-
+	
 	public UserModel() {
 		super();
 		

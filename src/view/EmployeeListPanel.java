@@ -8,13 +8,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
-import common.BackLblMouseListener;
+import common.BackButton;
 import common.MyDocFilter;
 
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -26,7 +27,6 @@ import javax.swing.SwingConstants;
 public class EmployeeListPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private static EmployeeListPanel instance;
 	private JTextField idTxt;
 	private JTextField fnameTxt;
 	private JTextField lnameTxt;
@@ -48,23 +48,29 @@ public class EmployeeListPanel extends JPanel {
 	private JLabel lnameLbl;
 	private JLabel fnameLbl;
 	private JLabel userIdLbl;
+	private BackButton backBtn;
 	
 	private EmployeeListPanel() {
 		initialize();
 	}
-	 public static EmployeeListPanel getInstance() {
-		 if (instance == null) {
-	            instance = new EmployeeListPanel();
-	        }
-	        return instance;
+	private static Map<String, EmployeeListPanel> cache = new HashMap<>();
+	 public static EmployeeListPanel getEmpListPanel(String sessionId) 
+	    {
+		 if(!cache.containsKey(sessionId)) 
+			{
+			 EmployeeListPanel empListPanel  = new EmployeeListPanel();
+				cache.put(sessionId, empListPanel);
+			}
+			return cache.get(sessionId);
 	    }
 	
 	public void initialize() {
 		setLayout(null);
 		this.setPreferredSize(new Dimension(768, 524));
-		BackLblMouseListener bckLbl = BackLblMouseListener.getInstance();
-		JLabel backLabel = bckLbl.backLblMouseListener();
-		add(backLabel);
+		
+		backBtn = new BackButton();
+		backBtn.setBounds(0, 0, 25, 25);
+		add(backBtn);
 		
 		String[] columns = {"ID", "First Name", "Last Name", "Username", "Password", "Admin"};
 		model = new DefaultTableModel(columns,0); 

@@ -7,6 +7,8 @@ import controller.EmployeeMenuPanelController;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 
@@ -15,23 +17,26 @@ public class EmployeeMenuPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JPanel empMenuBtns;
 	private JButton cashRegBtn;
-	private JButton btncanceledAccounts;
-	private JButton accRegBtn;
-	private JButton changeRegBtn;
-	private JButton freeBtn1;
-	private JButton freeBtn2;
-	private static EmployeeMenuPanel instance;
+	private JButton cashRegBalanceBtn;
+	private JButton ordRegBtn;
+	private JButton aggOrderBtn;
+	private JButton cashReqBtn;
+	private JButton cashDepoBtn;
 	
 	private EmployeeMenuPanel() {
 		initialize();
 	}
 	
-	 public static EmployeeMenuPanel getInstance() {
-	    	if (instance == null) {
-	            instance = new EmployeeMenuPanel();
-	    	}
-	        return instance;
-	    }
+	private static Map<String, EmployeeMenuPanel> cache = new HashMap<>();
+
+    public static EmployeeMenuPanel getEmployeeMenuPanel(String sessionId) {
+        if (!cache.containsKey(sessionId)) {
+        	EmployeeMenuPanel empMenuPanel = new EmployeeMenuPanel();
+            cache.put(sessionId, empMenuPanel);
+        }
+        return cache.get(sessionId);
+    }
+
 	
 	
 	public void initialize() 
@@ -52,25 +57,26 @@ public class EmployeeMenuPanel extends JPanel {
 		cashRegBtn.setBounds(64, 59, 85, 47);
 		empMenuBtns.add(cashRegBtn);
 		
-		btncanceledAccounts = new JButton("<html><center>Canceled</center></br><center> accounts</center></html>");
-		btncanceledAccounts.setBounds(64, 160, 85, 47);
-		empMenuBtns.add(btncanceledAccounts);
+		cashRegBalanceBtn = new JButton("<html><center>Cash</center></br><center> Balance</center></html>");
+		cashRegBalanceBtn.setBounds(64, 160, 85, 47);
+		empMenuBtns.add(cashRegBalanceBtn);
 		
-		accRegBtn = new JButton("<html><center>Accounts</center></br><center> register</center></html>");
-		accRegBtn.setBounds(253, 59, 85, 47);
-		empMenuBtns.add(accRegBtn);
+		ordRegBtn = new JButton("<html><center>Order</center></br><center> register</center></html>");
+		ordRegBtn.setBounds(253, 59, 85, 47);
+		ordRegBtn.setEnabled(false);
+		empMenuBtns.add(ordRegBtn);
 		
-		changeRegBtn = new JButton("<html><center>Change</center></br><center> register</center></html>");
-		changeRegBtn.setBounds(457, 59, 85, 47);
-		empMenuBtns.add(changeRegBtn);
+		aggOrderBtn = new JButton("<html><center>Aggregate</center></br><center> orders</center></html>");
+		aggOrderBtn.setBounds(457, 59, 85, 47);
+		empMenuBtns.add(aggOrderBtn);
 		
-		freeBtn1 = new JButton("New button");
-		freeBtn1.setBounds(253, 160, 85, 47);
-		empMenuBtns.add(freeBtn1);
+		cashReqBtn = new JButton("<html><center>Cash</center></br><center> Requisition</center></html>");
+		cashReqBtn.setBounds(253, 160, 85, 47);
+		empMenuBtns.add(cashReqBtn);
 		
-		freeBtn2 = new JButton("New button");
-		freeBtn2.setBounds(457, 160, 85, 47);
-		empMenuBtns.add(freeBtn2);
+		cashDepoBtn = new JButton("<html><center>Cash</center></br><center> Deposition</center></html>");
+		cashDepoBtn.setBounds(457, 160, 85, 47);
+		empMenuBtns.add(cashDepoBtn);
 		
 		
 		new EmployeeMenuPanelController(this);
@@ -80,8 +86,20 @@ public class EmployeeMenuPanel extends JPanel {
 	{
 		cashRegBtn.addActionListener(listener);
 	}
-	public void addActionListenerOnChangeRegBtn(ActionListener listener) 
+	public void addActionListenerOnAggOrderBtn(ActionListener listener) 
 	{
-		changeRegBtn.addActionListener(listener);
+		aggOrderBtn.addActionListener(listener);
+	}
+	public void addActionListenerOnCashReqBtn(ActionListener listener) 
+	{
+		cashReqBtn.addActionListener(listener);
+	}
+	public void addActionListenerOnCashDepoBtn(ActionListener listener) 
+	{
+		cashDepoBtn.addActionListener(listener);
+	}
+	public void addActionListenerOnCashBalBtn(ActionListener listener) 
+	{
+		cashRegBalanceBtn.addActionListener(listener);
 	}
 }

@@ -10,7 +10,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -24,19 +26,20 @@ import model.OrdersModel;
 import service.DBOrderManipulationServ;
 import view.CashRegPanel;
 import view.Frame;
-import view.PaymentPanel;
+import view.ReceivedMoneyPanel;
+import view.ReverseDenomPanel;
 
 public class CashRegPanelController {
 	private CashRegPanel cashReg;
-	private static CashRegPanelController instance;
 
 	  
-	 private CashRegPanelController(CashRegPanel cashReg)
+	 public CashRegPanelController(CashRegPanel cashReg)
 		{
 			this.cashReg = cashReg;
 			initialize();
 			
 		}
+	 
 	 public void initialize() {
 		 	this.cashReg.addFocusListenerOnAmt(new AddFocusListenerOnAmt());
 			this.cashReg.addActionListenerOnCheck(new AddActionListenerOnCheck());
@@ -50,14 +53,16 @@ public class CashRegPanelController {
 			showOrdersInTable();
 	    }
 
-	  public static CashRegPanelController getInstance() {
-		  if (instance == null) {
-			  System.out.println("Kreiranje novog kontrolera u if");
-	            instance = new CashRegPanelController(CashRegPanel.getInstance());
+	 private static Map<String, CashRegPanelController> cache = new HashMap<>();
+
+	    public static CashRegPanelController getCashRegPanelController(String sessionId) {
+	        if (!cache.containsKey(sessionId)) {
+	        	CashRegPanelController cashRegPanelContr = new CashRegPanelController(CashRegPanel.getCashRegPanel(sessionId));
+	            cache.put(sessionId, cashRegPanelContr);
 	        }
-	        return instance;
+	        return cache.get(sessionId);
 	    }
-	  
+
 	class AddFocusListenerOnAmt implements FocusListener{
 
 
@@ -119,11 +124,11 @@ public class CashRegPanelController {
 	
 	class AddActionListenerOnFinish implements ActionListener
 	{
-		
+		String sessionId = SessionManager.getCurrSess();
+		int empId = SessionManager.getEmpIdBySession(sessionId);
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int id = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-			int Sno = DBOrderManipulationServ.countOrders(id, LocalDate.now());
+			int Sno = DBOrderManipulationServ.countOrders(empId, LocalDate.now());
 			Sno = Sno+1;
 			if(emptyFieldCheck(cashReg.getInfoPanel())) {
 			String fullname = cashReg.getFullName();
@@ -134,8 +139,8 @@ public class CashRegPanelController {
 			double amt = cashReg.getAmtTxt();
 			double comm = cashReg.getCommTxt();
 			double invoiceAmt = cashReg.getInvoiceAmtTxt();
-			OrdersModel order = new OrdersModel(fullname, address, city, refNo, recAcc, amt, comm, invoiceAmt);
-			if(DBOrderManipulationServ.insertOrder(Sno, id, order)) 
+			OrdersModel order = new OrdersModel(Sno, fullname, address, city, refNo, recAcc, amt, comm, invoiceAmt, 0, empId);
+			if(DBOrderManipulationServ.insertOrder(order)) 
 			{
 				cashReg.removeAll();
 				cashReg.initialize();
@@ -152,27 +157,36 @@ public class CashRegPanelController {
 	
 	class AddActionListenerOnBillBtn implements ActionListener
 	{
+		String sessionId = SessionManager.getCurrSess();
+		int empId = SessionManager.getEmpIdBySession(sessionId);
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
-			PaymentPanel pp = PaymentPanel.getInstance();
-			PaymentPanelController ppc = PaymentPanelController.getInstance();
+			if(DBOrderManipulationServ.selectOrderForReverse(empId, LocalDate.now())== null)
+			{
+			ReceivedMoneyPanel pp = ReceivedMoneyPanel.getRecivedMoneyPanel(sessionId);
+			ReceivedMoneyPanelController ppc = ReceivedMoneyPanelController.getReceivedMoneyPanelController(sessionId);
 			pp.removeAll();
 			pp.initialize();
 			ppc.initialize();
 			pp.revalidate();
 			pp.repaint();
-			Frame.getInstance().showCard("exchangePanel");
+			Frame.getInstance().showCard("rcvdMoneyPanel");
+			}
+			else
+			{
+				Frame.getInstance().showCard("revDenomPanel");
+			}
 		}
 		
 	}
 	class AddActionListenerOnSendBtn implements ActionListener
 	{
-
+		String sessionId = SessionManager.getCurrSess();
+		int empId = SessionManager.getEmpIdBySession(sessionId);
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ArrayList<OrdersModel> paid = DBOrderManipulationServ.getPaid(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
+			ArrayList<OrdersModel> paid = DBOrderManipulationServ.getPaid(empId, LocalDate.now());
 			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 	            @Override
 	            protected Void doInBackground() throws Exception {
@@ -185,21 +199,15 @@ public class CashRegPanelController {
 	        Thread.sleep(500);
 	        SwingUtilities.invokeLater(() -> {
 			cashReg.deselectRow();
-			DBOrderManipulationServ.forwardOrders(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
-			ArrayList<OrdersModel> forwarded = DBOrderManipulationServ.getForwarded(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
-			System.out.println("Broj forwardovanih: " + forwarded );
-			CashRegPanel cashReg = CashRegPanel.getInstance();
-		    if (!(forwarded.isEmpty())) {
+			DBOrderManipulationServ.forwardOrders(empId, LocalDate.now());
+			CashRegPanel cashReg = CashRegPanel.getCashRegPanel(sessionId);
 		    	cashReg.removeAll();
 				cashReg.initialize();
 				initialize();
 				cashReg.revalidate();
 				cashReg.repaint();
-		    	
-		    }else {
-		    	JOptionPane.showMessageDialog(cashReg, "Prenos neuspeo.");
-		    }
-	        });
+	        }
+	        );
 		    return null;
 	            }
 	        };
@@ -211,63 +219,85 @@ public class CashRegPanelController {
 		
 	}
 	
-	class  AddMouseListenerOnTable implements MouseListener
-	{
 
+	class AddMouseListenerOnTable implements MouseListener {
+	    String sessionId = SessionManager.getCurrSess();
+	    int empId = SessionManager.getEmpIdBySession(sessionId);
 
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			
-				int selectedRow = cashReg.getInstanceOfTable().getSelectedRow();
-				Object SNo = cashReg.getInstanceOfTable().getValueAt(selectedRow, 0);
-				ArrayList<OrdersModel> order = DBOrderManipulationServ.selectOrderForCancel((int)SNo, SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
-				if(!order.isEmpty()) 
-				{
-					int res = JOptionPane.showConfirmDialog(cashReg, JOptionPane.WARNING_MESSAGE , "Do you want to cancel this order", JOptionPane.YES_NO_OPTION);
-					if(res == JOptionPane.YES_OPTION) 
-					{
-						if(DBOrderManipulationServ.setCancelled((int)SNo, SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now())>0)
-						{
-							cashReg.removeAll();
-							cashReg.initialize();
-							initialize();
-							cashReg.revalidate();
-							cashReg.repaint();
-						
-						}else {System.out.println("Neuspeo cancel naloga broj:"+ (int)SNo);}
-						
-					}else {}
-				}else JOptionPane.showMessageDialog(cashReg, "Can't be cancelled.");
-			
-			
-		}
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	        int selectedRow = cashReg.getInstanceOfTable().getSelectedRow();
+	        Object SNo = cashReg.getInstanceOfTable().getValueAt(selectedRow, 0);
+	        OrdersModel toBeReversedList = DBOrderManipulationServ.selectOrderForReverse(empId, LocalDate.now());
+	        OrdersModel order = DBOrderManipulationServ.getOrderBySno((int) SNo, empId, LocalDate.now());
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+	        if (toBeReversedList != null) {
+	            JOptionPane.showMessageDialog(null, "Finish your actions first.");
+	            return; 
+	        }
 
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+	        switch (order.getState()) {
+	            case 0:
+	                int res = JOptionPane.showConfirmDialog(cashReg, "Do you want to cancel this order?", "Cancel Order", JOptionPane.YES_NO_OPTION);
+	                if (res == JOptionPane.YES_OPTION) {
+	                    if (DBOrderManipulationServ.setCancelled((int) SNo, empId, LocalDate.now()) > 0) {
+	                        cashReg.removeAll();
+	                        cashReg.initialize();
+	                        initialize();
+	                        cashReg.revalidate();
+	                        cashReg.repaint();
+	                    } else {
+	                    	 JOptionPane.showMessageDialog(null, "Cancel failed.");
+	                    }
+	                }
+	                break;
+	            case 3:
+	                JOptionPane.showMessageDialog(null, "Order already cancelled.");
+	                break;
+	            case 1:
+	                if (order.isReversed()) {
+	                    JOptionPane.showMessageDialog(null, "Order can't be cancelled.");
+	                }
+	                break;
+	            case 2:
+	                if (!order.isReversed()) {
+	                    int ans = JOptionPane.showConfirmDialog(cashReg, "Do you want to REVERSE this order?", "Reverse Order", JOptionPane.YES_NO_OPTION);
+	                    if (ans == JOptionPane.YES_OPTION) {
+	                        DBOrderManipulationServ.setToBeReverse((int) SNo, empId, LocalDate.now());
+	                        ReverseDenomPanel rdp = ReverseDenomPanel.getReverseDenomPanel(sessionId);
+	                        ReverseDenomPanelController rdpc = ReverseDenomPanelController.getReverseDenomPanelController(sessionId);
+	                        rdp.removeAll();
+	                        rdp.initialize();
+	                        rdpc.initialize();
+	                        rdp.revalidate();
+	                        rdp.repaint();
+	                        Frame.getInstance().showCard("revDenomPanel");
+	                    }
+	                } else {
+	                    JOptionPane.showMessageDialog(null, "Order already reversed.");
+	                }
+	                break;
+	            default:
+	                
+	                break;
+	        }
+	    }
 
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+	    @Override
+	    public void mousePressed(MouseEvent e) {
+	    }
 
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+	    @Override
+	    public void mouseReleased(MouseEvent e) {
+	    }
 
-		
-		
+	    @Override
+	    public void mouseEntered(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseExited(MouseEvent e) {
+	    }
 	}
 	
 	public double countComm(double amt) 
@@ -341,7 +371,9 @@ public class CashRegPanelController {
 	}
 
 	public void showOrdersInTable() {
-		List<OrdersModel> order = DBOrderManipulationServ.selectOrders(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
+		String sessionId = SessionManager.getCurrSess();
+		int empId = SessionManager.getEmpIdBySession(sessionId);
+		List<OrdersModel> order = DBOrderManipulationServ.selectOrders(empId, LocalDate.now());
 		
 		for(OrdersModel ord : order) 
 		{

@@ -3,8 +3,12 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import common.SessionManager;
 import view.CashRegPanel;
-import view.ChangeRegPanel;
+import view.CashRequisitionPanel;
+import view.AggOrdersPanel;
+import view.CashDepositionPanel;
+import view.CashRegBalancePanel;
 import view.EmployeeMenuPanel;
 import view.Frame;
 
@@ -22,15 +26,19 @@ public class EmployeeMenuPanelController {
 	public void initialize() 
 	{
 		this.empMenuPanel.addActionListenerOnCashRegBtn(new AddActionListenerOnCashRegBtn());
-		this.empMenuPanel.addActionListenerOnChangeRegBtn(new AddActionListenerOnChangeRegBtn());
+		this.empMenuPanel.addActionListenerOnAggOrderBtn(new AddActionListenerOnAggOrderBtn());
+		this.empMenuPanel.addActionListenerOnCashReqBtn(new AddActionListenerOnCashReqBtn());
+		this.empMenuPanel.addActionListenerOnCashDepoBtn(new AddActionListenerOnCashDepoBtn());
+		this.empMenuPanel.addActionListenerOnCashBalBtn(new AddActionListenerOnCashBalBtn());
 	}
 	class AddActionListenerOnCashRegBtn implements ActionListener
 	{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			CashRegPanelController crpc = CashRegPanelController.getInstance();
-			CashRegPanel cr = CashRegPanel.getInstance();
+			String session = SessionManager.getCurrSess();
+			CashRegPanel cr = CashRegPanel.getCashRegPanel(session);
+			CashRegPanelController crpc = CashRegPanelController.getCashRegPanelController(session);
 			cr.removeAll();
 			cr.initialize();
 			crpc.initialize();
@@ -41,19 +49,73 @@ public class EmployeeMenuPanelController {
 		}
 		
 	}
-	class AddActionListenerOnChangeRegBtn implements ActionListener
+	class AddActionListenerOnAggOrderBtn implements ActionListener
 	{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ChangeRegPanel crp = ChangeRegPanel.getInstance();
-			ChangeRegPanelController crc = ChangeRegPanelController.getInstance();
+			String sessionId = SessionManager.getCurrSess();
+			AggOrdersPanel crp = AggOrdersPanel.getAggOrdersPanel(sessionId);
+			AggOrdersPanelController crc = AggOrdersPanelController.getAggOrdersPanelController(sessionId);
 			crp.removeAll();
 			crp.initialize();
 			crc.initialize();
 			crp.revalidate();
 			crp.repaint();
-			Frame.getInstance().showCard("changeRegPanel");
+			Frame.getInstance().showCard("aggOrdersPanel");
+		}
+		
+	}
+	class AddActionListenerOnCashReqBtn implements ActionListener
+	{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			CashRequisitionPanel crp = CashRequisitionPanel.getCashRequisitionPanel(SessionManager.getCurrSess());
+			CashRequisitionPanelController crc = CashRequisitionPanelController.getCashRequisitionPanelController(SessionManager.getCurrSess());
+			crp.removeAll();
+			crp.initialize();
+			crc.initialize();
+			crp.revalidate();
+			crp.repaint();
+			Frame.getInstance().showCard("cashReqPanel");
+			
+		}
+		
+	}
+	class AddActionListenerOnCashDepoBtn implements ActionListener
+	{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			CashDepositionPanel crp =CashDepositionPanel.getCashDepositionPanel(SessionManager.getCurrSess());
+			CashDepositionPanelController crc =CashDepositionPanelController.getCashDepositionPanelController(SessionManager.getCurrSess());
+			crp.removeAll();
+			crp.initialize();
+			crc.initialize();
+			crp.revalidate();
+			crp.repaint();
+			Frame.getInstance().showCard("cashDepoPanel");
+			
+		}
+		
+	}
+	
+	class AddActionListenerOnCashBalBtn implements ActionListener
+	{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			CashRegBalancePanel crb = CashRegBalancePanel.getCashRegBalancePanel(SessionManager.getCurrSess());
+			CashRegBalancePanelController crbc = CashRegBalancePanelController.getCashRegBalancePanelController(SessionManager.getCurrSess());
+			crb.removeAll();
+			crb.initialize();
+			crbc.initialize();
+			crb.revalidate();
+			crb.repaint();
+			Frame.getInstance().showCard("cashRegBalancePanel");
+			
 		}
 		
 	}

@@ -29,6 +29,7 @@ public class Logout {
 	            public void actionPerformed(ActionEvent e) {
 	            	if(SessionManager.removeCurrSession())
 	            	{
+	            		
 	            		LoginPanel lp = LoginPanel.getInstance();
 	            		LoginPanelController lpc = LoginPanelController.getInstance();
 	            		lp.removeAll();

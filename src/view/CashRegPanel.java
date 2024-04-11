@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
 
-import common.BackLblMouseListener;
+import common.BackButton;
 import common.MyDocFilter;
 import common.SessionManager;
 import model.OrdersModel;
@@ -21,6 +21,8 @@ import java.awt.event.MouseListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
@@ -59,18 +61,20 @@ public class CashRegPanel extends JPanel {
 	private JLabel totalLbl;
 	private JButton billBtn;
 	private JButton sendBtn;
-	private static CashRegPanel instance;
+	private BackButton backBtn;
 	
-	private CashRegPanel() {
+	public CashRegPanel() {
 	        initialize();
 	       
-	    }
+	}
+	 private static Map<String, CashRegPanel> cache = new HashMap<>();
 
-	    public static CashRegPanel getInstance() {
-	    	if (instance == null) {
-	            instance = new CashRegPanel();
-	    	}
-	        return instance;
+	    public static CashRegPanel getCashRegPanel(String sessionId) {
+	        if (!cache.containsKey(sessionId)) {
+	        	CashRegPanel cashRegPanel = new CashRegPanel();
+	            cache.put(sessionId, cashRegPanel);
+	        }
+	        return cache.get(sessionId);
 	    }
 
 
@@ -78,14 +82,16 @@ public class CashRegPanel extends JPanel {
 		this.setPreferredSize(new Dimension(768, 524));
 		setLayout(null);
 		
-		BackLblMouseListener bckLbl = BackLblMouseListener.getInstance();
-		JLabel backLabel = bckLbl.backLblMouseListener();
-		add(backLabel);
+		
 		
 		infoPanel = new JPanel();
 		infoPanel.setLayout(null);
 		infoPanel.setBounds(241, 20, 280, 313);
 		add(infoPanel);
+	
+		backBtn = new BackButton();
+		backBtn.setBounds(0, 0, 25, 25);
+		add(backBtn);
 		
 		amtLbl = new JLabel("Amount:");
 		amtLbl.setBounds(10, 20, 105, 17);
@@ -423,11 +429,10 @@ public class CashRegPanel extends JPanel {
 	}
 	public void setSendBtn() 
 	{
-		ArrayList<OrdersModel> paidList = DBOrderManipulationServ.getPaid(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
-		ArrayList<OrdersModel> forwardedList = DBOrderManipulationServ.getForwarded(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
-		System.out.println("paidLista:" +paidList);
-		System.out.println("forwarded lista: " +forwardedList);
-		if(!(paidList.isEmpty())) 
+		int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
+		OrdersModel toBeReversedList = DBOrderManipulationServ.selectOrderForReverse(empId, LocalDate.now());
+		ArrayList<OrdersModel> paidList = DBOrderManipulationServ.getPaid(empId, LocalDate.now());
+		if(!(paidList.isEmpty()) || toBeReversedList!=null) 
 		{
 			sendBtn.setEnabled(true);
 		}else sendBtn.setEnabled(false);

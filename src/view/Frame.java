@@ -81,7 +81,7 @@ public class Frame extends JFrame {
 	{
 		if (panelHistory.size() > 1) {
 			 int last = panelHistory.size() - 2;
-			 if(panelHistory.get(last).equals("exchangePanel")) 
+			 if(panelHistory.get(last).equals("rcvdMoneyPanel") || panelHistory.get(last).equals("revDenomPanel") || panelHistory.get(last).equals("exchangePanel"))	 
 			 {
 				 panelHistory.remove(last);
 				 panelHistory.remove(last);

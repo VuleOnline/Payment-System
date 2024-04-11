@@ -6,7 +6,6 @@ import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-
 import javax.swing.JTextField;
 
 
@@ -17,26 +16,28 @@ import javax.swing.JButton;
 public class LoginPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+
+	private static LoginPanel instance;
+	
 	private JTextField unameTxt;
 	private JPasswordField passTxt;
 	private JLabel unameLabel;
 	private JLabel passLabel;
 	private JButton logBtn;
-	private static LoginPanel instance;
 	
 	private LoginPanel() 
 	{
 		initialize();
 	}
 	
-	public static LoginPanel getInstance() 
-	{
-		if(instance==null) 
-		{
-			instance=new LoginPanel();
-		}
-		return instance;
-	}
+	 public static LoginPanel getInstance() 
+	    {
+		 if(instance == null) 
+			{
+			 instance = new LoginPanel();
+			}
+			return instance;
+	    }
 
 	
 	public void initialize() {

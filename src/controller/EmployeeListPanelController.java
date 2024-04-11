@@ -4,7 +4,9 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -18,7 +20,6 @@ import view.EmployeeListPanel;
 public class EmployeeListPanelController {
 	
 	EmployeeListPanel empListPanel;
-	private static EmployeeListPanelController instance;
 	
 	private EmployeeListPanelController(EmployeeListPanel empListPanel) 
 	{
@@ -26,11 +27,15 @@ public class EmployeeListPanelController {
 		initialize();
 	
 	}
-	 public static EmployeeListPanelController getInstance() {
-		 if (instance == null) {
-	            instance = new EmployeeListPanelController(EmployeeListPanel.getInstance());
-	        }
-	        return instance;
+	private static Map<String, EmployeeListPanelController> cache = new HashMap<>();
+	 public static EmployeeListPanelController getEmpListPanelContr(String sessionId) 
+	    {
+		 if(!cache.containsKey(sessionId)) 
+			{
+			 EmployeeListPanelController empListPanelContr  = new EmployeeListPanelController(EmployeeListPanel.getEmpListPanel(sessionId));
+				cache.put(sessionId, empListPanelContr);
+			}
+			return cache.get(sessionId);
 	    }
 	public void initialize() 
 	{
