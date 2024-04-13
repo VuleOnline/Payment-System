@@ -3,7 +3,6 @@ package view;
 import java.awt.Dimension;
 import java.awt.event.ItemListener;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableModel;
 
 import common.BackButton;
+import common.OrderTable;
 import common.SessionManager;
 import service.DBMoneyManipulationServ;
 
@@ -23,7 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-public class AggOrdersPanel extends JPanel {
+public class AggOrdersPanel extends JPanel implements OrderTable<Object>{
 
 	private static final long serialVersionUID = 1L;
 	private JTable table;
@@ -144,11 +144,12 @@ public class AggOrdersPanel extends JPanel {
 		add(changeTxt);
 		
 	}
-	public void addOrderInTable(int sNo, String fullName, String address, String refNo, String recAcc,
-			double amount, double comm, double invoiceAmt, LocalDateTime orderDate, int state, boolean reversed) 
-	{
-		model.addRow(new Object[] {sNo, fullName, address,refNo, recAcc, amount, comm, invoiceAmt, orderDate, state, reversed});
+	@Override
+	public void showOrderInTable(Object... param) {
+		model.addRow(param);
+		
 	}
+	@Override
 	public void clearTable() 
 	{
 		model.setRowCount(0);
@@ -177,4 +178,5 @@ public class AggOrdersPanel extends JPanel {
 	{
 		comboBox.addItemListener(item);
 	}
+
 }

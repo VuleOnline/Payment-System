@@ -7,12 +7,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import common.BackButton;
-import common.CommonMethods;
+import common.TxtFieldListener;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
 import javax.swing.JButton;
 
-public class ReceivedMoneyPanel extends JPanel {
+public class ReceivedMoneyPanel extends JPanel implements TxtFieldListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel denominationPanel;
@@ -288,12 +286,12 @@ public class ReceivedMoneyPanel extends JPanel {
 		 
 		
 	}
-	
-	public JPanel getDenomPanelInstance() 
-	{
+
+	@Override
+	public JPanel getDenomPanelInstance() {
+		
 		return denominationPanel;
 	}
-	
 	public JPanel getSumPanelInstance() 
 	{
 		return sumPanel;
@@ -341,16 +339,10 @@ public class ReceivedMoneyPanel extends JPanel {
 			return 0.0;
 		}
 	}
-	public void addFocusListeneOnTxtFields(FocusListener listener) 
-	{
-		ArrayList<JTextField> compList =  CommonMethods.fieldsToList(getDenomPanelInstance());
-		for(JTextField list : compList) 
-		{
-			list.addFocusListener(listener);
-		}
-	}
 	public void addActionLIstenerOnNextBtn(ActionListener listener) 
 	{
 		nextBtn.addActionListener(listener);
 	}
+	
+	
 }

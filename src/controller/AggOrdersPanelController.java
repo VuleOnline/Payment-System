@@ -65,7 +65,7 @@ public class AggOrdersPanelController {
 			
 			public void showConsignationInTable(OrdersModel ord) 
 			{
-				aggOrd.addOrderInTable(ord.getsNo(), ord.getFullName(), ord.getAddress(),ord.getRefNo(), 
+				aggOrd.showOrderInTable(ord.getsNo(), ord.getFullName(), ord.getAddress(),ord.getRefNo(), 
 						ord.getRecAcc(), ord.getAmount(), ord.getComm(), ord.getInvoiceAmt(),
 						ord.getOrderDate(), ord.getState(), ord.isReversed());
 			}

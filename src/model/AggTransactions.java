@@ -20,7 +20,7 @@ public class AggTransactions {
 		this.total = total;
 		this.rcvd = rcvd;
 		this.change = change;
-		this.setReversed(reversed);
+		this.reversed = reversed;
 		this.empid = empid;
 		this.date = date;
 	}

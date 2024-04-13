@@ -9,6 +9,7 @@ import javax.swing.text.AbstractDocument;
 
 import common.BackButton;
 import common.MyDocFilter;
+import common.OrderTable;
 import common.SessionManager;
 import model.OrdersModel;
 import service.DBOrderManipulationServ;
@@ -19,7 +20,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 
-public class CashRegPanel extends JPanel {
+public class CashRegPanel extends JPanel implements OrderTable<Object>{
 
 	private static final long serialVersionUID = 1L;
 	private JLabel invoiceLbl;
@@ -237,10 +237,16 @@ public class CashRegPanel extends JPanel {
 	
 	}
 
-	public void addOrderInTable(int sNo, String fullName, String address, String refNo, String recAcc,
-			double amount, double comm, double invoiceAmt, LocalDateTime orderDate) 
+
+	@Override
+	public void showOrderInTable(Object... param) {
+		model.addRow(param);
+		
+	}
+	@Override
+	public void clearTable() 
 	{
-		model.addRow(new Object[] {sNo, fullName, address,refNo, recAcc, amount, comm, invoiceAmt, orderDate});
+		model.setRowCount(0);
 	}
 	public void addMouseListenerOnTable(MouseListener listener) 
 	{
@@ -277,10 +283,6 @@ public class CashRegPanel extends JPanel {
 		        
 	});
 	    }
-	public void clearTable() 
-	{
-		model.setRowCount(0);
-	}
 	
 	public JPanel getInfoPanel() 
 	{

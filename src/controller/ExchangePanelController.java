@@ -84,7 +84,7 @@ public class ExchangePanelController {
 		@Override
 		public void focusLost(FocusEvent e) {
 			int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-			double result = CommonMethods.subCalculator(exchPanel.getChangeInputPanelInstance(), empId);
+			double result = CommonMethods.subCalculator(exchPanel.getDenomPanelInstance(), empId);
 			double oldChange = exchPanel.getRcvd()-exchPanel.getTotal();
 			exchPanel.setChange(oldChange - result);
 		}
@@ -118,7 +118,7 @@ public class ExchangePanelController {
 		   }
 		   
 		   else if (exchPanel.getChange() == 0.0) {
-			    CommonMethods.subFromDenom(exchPanel.getChangeInputPanelInstance(), empId);
+			    CommonMethods.subFromDenom(exchPanel.getDenomPanelInstance(), empId);
 		    	AggOrdersInsertation(DBOrderManipulationServ.getUnpaidOrders(empId, LocalDate.now()));
 		    	int paidList = DBOrderManipulationServ.setPaid(empId, LocalDate.now());
 		    	if(paidList>0) {

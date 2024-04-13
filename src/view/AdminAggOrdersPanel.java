@@ -8,7 +8,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseListener;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
@@ -26,8 +25,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
 import common.BackButton;
+import common.OrderTable;
 
-public class AdminAggOrdersPanel extends JPanel {
+public class AdminAggOrdersPanel extends JPanel implements OrderTable<Object> {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel backButtonPanel;
@@ -187,12 +187,12 @@ private static Map<String, AdminAggOrdersPanel> cache = new HashMap<>();
 		passPanel.add(empPassLblinfo);
 		infoPanel.add(passPanel);
  }
- public void showOrderInTable(String sNo, double comm, double total,double recMoney, double change, String reversed,
-			int empId, LocalDateTime date) 
-	{
-		model.addRow(new Object[] {sNo, comm, total, recMoney, change, reversed,
-				empId, date});
+ @Override
+	public void showOrderInTable(Object... param) {
+		model.addRow(param);
+		
 	}
+ @Override
 	public void clearTable() 
 	{
 		model.setRowCount(0);
@@ -282,5 +282,6 @@ private static Map<String, AdminAggOrdersPanel> cache = new HashMap<>();
 		dateTxt.addFocusListener(listener);
 		idTxt.addFocusListener(listener);
 	}
+
 
 }

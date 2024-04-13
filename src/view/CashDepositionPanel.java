@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,9 +14,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import common.BackButton;
-import common.CommonMethods;
+import common.TxtFieldListener;
 
-public class CashDepositionPanel extends JPanel {
+public class CashDepositionPanel extends JPanel implements TxtFieldListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel backButtonPanel;
@@ -269,6 +267,15 @@ public class CashDepositionPanel extends JPanel {
 		confirmBtn.setBounds(591, 436, 85, 21);
 		contentPanel.add(confirmBtn);
 	}
+	
+
+	@Override
+	public JPanel getDenomPanelInstance() {
+		
+		return denominationPanel;
+	}
+
+	
 	public void setTotal(double totalText )
 	{
 		try {
@@ -293,18 +300,7 @@ public class CashDepositionPanel extends JPanel {
 	{
 		confirmBtn.setEnabled(false);
 	}
-	public JPanel getDenomPanelInstance() 
-	{
-		return denominationPanel;
-	}
-	public void addFocusListenerOnTxtFields(FocusListener listener) 
-	{
-		ArrayList<JTextField> field =  CommonMethods.fieldsToList(getDenomPanelInstance());
-		for(JTextField list : field) 
-		{
-			list.addFocusListener(listener);
-		}
-	}
+	
 	public void addActionListenerOnConfirmBtn(ActionListener listener) 
 	{
 		confirmBtn.addActionListener(listener);

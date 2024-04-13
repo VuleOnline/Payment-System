@@ -38,7 +38,7 @@ public class CashDepositionPanelController {
 	}
 	public void initialize() 
 	{
-		this.cashDepo.addFocusListenerOnTxtFields(new AddFocusListenerOnTxtFields());
+		 this.cashDepo.addFocusListeneOnTxtFields(new AddFocusListenerOnTxtFields());
 		this.cashDepo.addActionListenerOnConfirmBtn(new AddActionListenerOnConfirmBtn());
 	}
 	class AddFocusListenerOnTxtFields implements FocusListener

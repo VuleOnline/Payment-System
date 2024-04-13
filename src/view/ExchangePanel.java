@@ -5,7 +5,6 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +12,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.AbstractDocument;
 
-import common.CommonMethods;
 import common.MyDocFilter;
+import common.TxtFieldListener;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
 
-public class ExchangePanel extends JPanel {
+public class ExchangePanel extends JPanel implements TxtFieldListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField rcvdTxt;
@@ -293,6 +292,11 @@ public class ExchangePanel extends JPanel {
 		setFocusable(true);
 
 	}
+	@Override
+	public JPanel getDenomPanelInstance() {
+		return changeInputPanel;
+	
+	}
 	public void setTotal(double totalText )
 	{
 		try {
@@ -362,21 +366,11 @@ public class ExchangePanel extends JPanel {
 	{
 		rcvdTxt.addFocusListener(listener);
 	}
-	public void addFocusListeneOnTxtFields(FocusListener listener) 
-	{
-		ArrayList<JTextField> compList =  CommonMethods.fieldsToList(getChangeInputPanelInstance());
-		for(JTextField list : compList) 
-		{
-			list.addFocusListener(listener);
-		}
-	}
 	public void addActionListenerOnFin(ActionListener listener) 
 	{
 		finBttn.addActionListener(listener);
 	}
-	public JPanel getChangeInputPanelInstance() 
-	{
-		return changeInputPanel;
-	}
+
+	
 
 }

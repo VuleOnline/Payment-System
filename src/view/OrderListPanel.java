@@ -13,9 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import common.BackButton;
+import common.OrderTable;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-public class OrderListPanel extends JPanel {
+public class OrderListPanel extends JPanel implements OrderTable<Object>{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel inputFieldPanel;
@@ -249,12 +249,12 @@ public class OrderListPanel extends JPanel {
 		
 		
 	}
-	public void showOrderInTable(int sNo, String fullName, String address, String city, String refNo, String recAcc,
-			double amount, double comm, double invoiceAmt, LocalDateTime orderDate, int state, boolean reversed, int id) 
-	{
-		model.addRow(new Object[] {sNo, fullName, address, city, refNo, recAcc,
-				amount, comm, invoiceAmt, orderDate, state, reversed, id});
+	@Override
+	public void showOrderInTable(Object... param) {
+		model.addRow(param);
+		
 	}
+	@Override
 	public void clearTable() 
 	{
 		model.setRowCount(0);
@@ -401,6 +401,8 @@ public class OrderListPanel extends JPanel {
 		forwRadioBtn.addItemListener(listener);
 		cancRadioBtn.addItemListener(listener);
 	}
+
+	
 
 	
 }

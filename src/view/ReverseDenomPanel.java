@@ -3,8 +3,6 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,9 +13,9 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
-import common.CommonMethods;
+import common.TxtFieldListener;
 
-public class ReverseDenomPanel extends JPanel {
+public class ReverseDenomPanel extends JPanel implements TxtFieldListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPanel;
@@ -282,10 +280,11 @@ public class ReverseDenomPanel extends JPanel {
 		
 	}
 	
-	public JPanel getDenomPanelInstance() 
-	{
+	@Override
+	public JPanel getDenomPanelInstance() {
 		return denominationPanel;
 	}
+
 	public void setTotal(double totalText )
 	{
 		try {
@@ -328,19 +327,13 @@ public class ReverseDenomPanel extends JPanel {
 			return 0.0;
 		}
 	}
-	public void addFocusListeneOnTxtFields(FocusListener listener) 
-	{
-		ArrayList<JTextField> compList =  CommonMethods.fieldsToList(getDenomPanelInstance());
-		for(JTextField list : compList) 
-		{
-			list.addFocusListener(listener);
-		}
-	}
+	
 	public void  addActionListenerOnFinBtn(ActionListener listener) 
 	{
 		finishBtn.addActionListener(listener);
 	}
 
+	
 	
 
 	

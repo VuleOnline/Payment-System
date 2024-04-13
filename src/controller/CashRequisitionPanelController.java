@@ -39,7 +39,7 @@ public class CashRequisitionPanelController {
 	}
 	public void initialize() 
 	{
-		this.cashRequiPanel.addFocusListenerOnTxtFields(new AddFocusListenerOnTxtFields());
+		this.cashRequiPanel.addFocusListeneOnTxtFields(new AddFocusListenerOnTxtFields());
 		this.cashRequiPanel.addActionListenerOnConfirmBtn(new AddActionListenerOnConfirmBtn());
 	}
 	class AddFocusListenerOnTxtFields implements FocusListener

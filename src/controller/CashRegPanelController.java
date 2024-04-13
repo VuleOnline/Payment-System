@@ -377,7 +377,7 @@ public class CashRegPanelController {
 		
 		for(OrdersModel ord : order) 
 		{
-			cashReg.addOrderInTable(ord.getsNo(), ord.getFullName(), ord.getAddress(),ord.getRefNo(), 
+			cashReg.showOrderInTable(ord.getsNo(), ord.getFullName(), ord.getAddress(),ord.getRefNo(), 
 					ord.getRecAcc(), ord.getAmount(), ord.getComm(), ord.getInvoiceAmt(),
 					ord.getOrderDate());
 		}
