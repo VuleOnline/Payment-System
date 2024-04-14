@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import common.CommonMethods;
+import common.DenomManipulationMethods;
 import common.SessionManager;
 import model.OrdersModel;
 import service.DBMoneyManipulationServ;
@@ -56,7 +56,7 @@ public class ReverseDenomPanelController {
 		@Override
 		public void focusLost(FocusEvent e) {
 			int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-			double result = CommonMethods.subCalculator(revDenom.getDenomPanelInstance(), empId);
+			double result = DenomManipulationMethods.subCalculator(revDenom.getDenomPanelInstance(), empId);
 			revDenom.setRev(revDenom.getTotal()-result);
 		}
 		
@@ -72,7 +72,7 @@ public class ReverseDenomPanelController {
 			if(revDenom.getRev()== 0.0) 
 			{
 				OrdersModel order = DBOrderManipulationServ.selectOrderForReverse(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
-				 CommonMethods.subFromDenom(revDenom.getDenomPanelInstance(), empId);
+				 DenomManipulationMethods.subFromDenom(revDenom.getDenomPanelInstance(), empId);
 				 DBMoneyManipulationServ.reverseOrderInAgg(order);
 				 CashRegPanel cr = CashRegPanel.getCashRegPanel(sessionId);
 			     CashRegPanelController crc = CashRegPanelController.getCashRegPanelController(sessionId);

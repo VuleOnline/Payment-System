@@ -9,11 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
-import common.CommonMethods;
+import common.DenomManipulationMethods;
+import common.SafeTransfer;
 import common.SessionManager;
-import model.SafeTransfers;
 import service.DBMoneyManipulationServ;
 import view.CashDepositionPanel;
 
@@ -53,7 +52,7 @@ public class CashDepositionPanelController {
 		@Override
 		public void focusLost(FocusEvent e) {
 			int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-			double result = CommonMethods.subCalculator(cashDepo.getDenomPanelInstance(), empId);
+			double result = DenomManipulationMethods.subCalculator(cashDepo.getDenomPanelInstance(), empId);
 			cashDepo.setTotal(result);
 			
 		}
@@ -72,23 +71,11 @@ public class CashDepositionPanelController {
 			}
 			else 
 			{
-				boolean isWithdrawal = false;
-				HashMap<String, String> list = CommonMethods.fieldMap(cashDepo.getDenomPanelInstance());
-				HashMap<String, String> labelList =CommonMethods.labelValue();
-				for(Map.Entry<String, String> entry : list.entrySet()) 
-				{
-					String filedName = entry.getKey();
-					JTextField field = CommonMethods.getJTextField(cashDepo.getDenomPanelInstance(), filedName);
-					String value = list.get(field.getName());
-					System.out.println("labela za "+field.getName()+"je: "+value);
-					String label = labelList.get(value);
-					double fieldTxt = field.getText().isEmpty() ? 0.0 : Double.parseDouble(field.getText());
-					int denom = Integer.parseInt(label);
-					int quantity = (int) fieldTxt;
-					SafeTransfers st = new SafeTransfers(denom, quantity, empId, LocalDate.now(), isWithdrawal);
-					DBMoneyManipulationServ.insertCashReqi(st);
-					cashDepo.setConfirmBtnOnFalse();
-				}
+				boolean isWhat = false;
+				SafeTransfer.SafeTransferMethod(cashDepo.getDenomPanelInstance(), empId, isWhat);
+				System.out.println("predaja u sef(da bude 'false'): "+isWhat);
+				cashDepo.setConfirmBtnOnFalse();
+				
 			}
 		}
 		

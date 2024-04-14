@@ -16,7 +16,7 @@ import model.DenomEntryModel;
 import service.DBMoneyManipulationServ;
 
 
-public class CommonMethods {
+public class DenomManipulationMethods {
  
 	public static ArrayList<JTextField> fieldsToList(Container field) 
 	{
@@ -96,12 +96,12 @@ public class CommonMethods {
 	} 
 	public static void subFromDenom(JPanel panel, int empId) 
 	{
-		HashMap<String, String> list = CommonMethods.fieldMap(panel);
-		HashMap<String, String> labelList =CommonMethods.labelValue();
+		HashMap<String, String> list = DenomManipulationMethods.fieldMap(panel);
+		HashMap<String, String> labelList =DenomManipulationMethods.labelValue();
 		for(Map.Entry<String, String> entry : list.entrySet()) 
 		{
 			String filedName = entry.getKey();
-			JTextField field = CommonMethods.getJTextField(panel, filedName);
+			JTextField field = DenomManipulationMethods.getJTextField(panel, filedName);
 			String value = list.get(field.getName());
 			String label = labelList.get(value);
 			double fieldTxt = field.getText().isEmpty() ? 0.0 : Double.parseDouble(field.getText());
@@ -113,12 +113,12 @@ public class CommonMethods {
 	}
 	public static void addToDenom(JPanel panel, int empId) 
 	{
-		HashMap<String, String> list = CommonMethods.fieldMap(panel);
-		HashMap<String, String> labelList =CommonMethods.labelValue();
+		HashMap<String, String> list = DenomManipulationMethods.fieldMap(panel);
+		HashMap<String, String> labelList =DenomManipulationMethods.labelValue();
 		for(Map.Entry<String, String> entry : list.entrySet()) 
 		{
 			String filedName = entry.getKey();
-			JTextField field = CommonMethods.getJTextField(panel, filedName);
+			JTextField field = DenomManipulationMethods.getJTextField(panel, filedName);
 			String value = list.get(field.getName());
 			String label = labelList.get(value);
 			double fieldTxt = field.getText().isEmpty() ? 0.0 : Double.parseDouble(field.getText());

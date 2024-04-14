@@ -10,7 +10,7 @@ public interface TxtFieldListener {
 	
 	default void addFocusListeneOnTxtFields(FocusListener listener) 
 	{
-		ArrayList<JTextField> compList =  CommonMethods.fieldsToList(getDenomPanelInstance());
+		ArrayList<JTextField> compList =  DenomManipulationMethods.fieldsToList(getDenomPanelInstance());
 		for(JTextField list : compList) 
 		{
 			list.addFocusListener(listener);

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import common.CommonMethods;
+import common.DenomManipulationMethods;
 import common.SessionManager;
 import service.DBOrderManipulationServ;
 import view.CashRegPanel;
@@ -52,7 +52,7 @@ public class ReceivedMoneyPanelController {
 
 		@Override
 		public void focusLost(FocusEvent e) {
-			double result = CommonMethods.addCalculator(rcvMon.getDenomPanelInstance());
+			double result = DenomManipulationMethods.addCalculator(rcvMon.getDenomPanelInstance());
 			rcvMon.setRcvd(result);
 		}
 		
@@ -67,7 +67,7 @@ public class ReceivedMoneyPanelController {
 			int empId = SessionManager.getEmpIdBySession(sessionId);
 			if(rcvMon.getRcvd()> rcvMon.getTotal()) 
 			{
-			CommonMethods.addToDenom(rcvMon.getDenomPanelInstance(), empId);
+			DenomManipulationMethods.addToDenom(rcvMon.getDenomPanelInstance(), empId);
 			ExchangePanelController epc = ExchangePanelController.getExchangePanelController(sessionId);
 			ExchangePanel ep = ExchangePanel.getExchangePanel(sessionId);
 	    	ep.removeAll();
@@ -81,7 +81,7 @@ public class ReceivedMoneyPanelController {
 			{
 				ExchangePanelController exchPanel = ExchangePanelController.getExchangePanelController(sessionId);
 				exchPanel.AggOrdersInsertation(DBOrderManipulationServ.getUnpaidOrders(empId, LocalDate.now()));
-				CommonMethods.addToDenom(rcvMon.getDenomPanelInstance(), empId);
+				DenomManipulationMethods.addToDenom(rcvMon.getDenomPanelInstance(), empId);
 				int paidList = DBOrderManipulationServ.setPaid(empId, LocalDate.now());
 		    	if(paidList>0) 
 		    	{

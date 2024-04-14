@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
-import common.CommonMethods;
+import common.DenomManipulationMethods;
 import common.SessionManager;
 import model.DenomEntryModel;
 import model.OrdersModel;
@@ -63,12 +63,12 @@ private static Map<String, CashRegBalancePanelController> cache = new HashMap<>(
 	public void txtFieldSet() 
 	{
 		int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-		HashMap<String, String> list = CommonMethods.fieldMap(cashRegBalance.getDenomPanelInstance());
-		HashMap<String, String> labelList =CommonMethods.labelValue();
+		HashMap<String, String> list = DenomManipulationMethods.fieldMap(cashRegBalance.getDenomPanelInstance());
+		HashMap<String, String> labelList =DenomManipulationMethods.labelValue();
 		for(Map.Entry<String, String> entry : list.entrySet()) 
 		{
 			String filedName = entry.getKey();
-			JTextField field = CommonMethods.getJTextField(cashRegBalance.getDenomPanelInstance(), filedName);
+			JTextField field = DenomManipulationMethods.getJTextField(cashRegBalance.getDenomPanelInstance(), filedName);
 			String value = list.get(field.getName());
 			String label = labelList.get(value);
 			int denom = Integer.parseInt(label);

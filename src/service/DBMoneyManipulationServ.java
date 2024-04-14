@@ -196,7 +196,7 @@ public class DBMoneyManipulationServ {
 		
 		return rows;
 	}
-	public static boolean insertCashReqi(SafeTransfers st) 
+	public static boolean insertSafeTransfer(SafeTransfers st) 
 	{
 		boolean rows = false;
 		try
