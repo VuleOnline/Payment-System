@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import common.DenomManipulationMethods;
 import common.SafeTransfer;
 import common.SessionManager;
-import service.DBMoneyManipulationServ;
+import dao.DBMoneyManipulationDao;
 import view.CashDepositionPanel;
 
 public class CashDepositionPanelController {
@@ -64,7 +64,7 @@ public class CashDepositionPanelController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-			double total = DBMoneyManipulationServ.getCashRegSum(empId, LocalDate.now());
+			double total = DBMoneyManipulationDao.getCashRegSum(empId, LocalDate.now());
 			if(cashDepo.getTotal()>total) 
 			{
 				JOptionPane.showMessageDialog(null, "Money sufficiency in cash register.");

@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import common.BackButton;
 import common.OrderTable;
 import common.SessionManager;
-import service.DBMoneyManipulationServ;
+import dao.DBMoneyManipulationDao;
 
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -70,7 +70,7 @@ public class AggOrdersPanel extends JPanel implements OrderTable<Object>{
 		sNoListLbl.setBounds(258, 26, 78, 22);
 		add(sNoListLbl);
 		
-		String[] options =  DBMoneyManipulationServ.getSnos
+		String[] options =  DBMoneyManipulationDao.getSnos
 		(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now()).toArray(new String[0]);
 		comboBox = new JComboBox<>(options);
 		comboBox.setBounds(358, 27, 107, 21);

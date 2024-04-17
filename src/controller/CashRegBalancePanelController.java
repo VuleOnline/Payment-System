@@ -10,10 +10,10 @@ import javax.swing.JTextField;
 
 import common.DenomManipulationMethods;
 import common.SessionManager;
+import dao.DBMoneyManipulationDao;
+import dao.DBOrderManipulationDao;
 import model.DenomEntryModel;
 import model.OrdersModel;
-import service.DBMoneyManipulationServ;
-import service.DBOrderManipulationServ;
 import view.CashRegBalancePanel;
 import view.Frame;
 
@@ -40,14 +40,14 @@ private static Map<String, CashRegBalancePanelController> cache = new HashMap<>(
 	public void initialize() 
 	{
 		int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-		OrdersModel order = DBOrderManipulationServ.selectOrderForReverse(empId, LocalDate.now());
+		OrdersModel order = DBOrderManipulationDao.selectOrderForReverse(empId, LocalDate.now());
 		if(order==null) 
 		{
 			cashRegBalance.setSuficiency(0.0);
 		}else this.cashRegBalance.setSuficiency(order.getInvoiceAmt());
 		this.cashRegBalance.addActionLIstenerOnCloseBtn(new AddActionLIstenerOnCloseBtn());
 		txtFieldSet();
-		this.cashRegBalance.setTotal(DBMoneyManipulationServ.getCashRegSum(empId, LocalDate.now()));
+		this.cashRegBalance.setTotal(DBMoneyManipulationDao.getCashRegSum(empId, LocalDate.now()));
 	}
 	
 	class AddActionLIstenerOnCloseBtn implements ActionListener
@@ -73,7 +73,7 @@ private static Map<String, CashRegBalancePanelController> cache = new HashMap<>(
 			String label = labelList.get(value);
 			int denom = Integer.parseInt(label);
 			DenomEntryModel denom_obj = new DenomEntryModel(denom, empId, LocalDate.now());
-			int denom_quant = DBMoneyManipulationServ.geDenomQuant(denom_obj);
+			int denom_quant = DBMoneyManipulationDao.geDenomQuant(denom_obj);
 			field.setText(String.valueOf(denom_quant));
 		}
 					

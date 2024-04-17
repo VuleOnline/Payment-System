@@ -21,9 +21,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import common.SessionManager;
+import dao.DBOrderManipulationDao;
 import model.OrdersModel;
-
-import service.DBOrderManipulationServ;
 import view.CashRegPanel;
 import view.Frame;
 import view.ReceivedMoneyPanel;
@@ -128,7 +127,7 @@ public class CashRegPanelController {
 		int empId = SessionManager.getEmpIdBySession(sessionId);
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int Sno = DBOrderManipulationServ.countOrders(empId, LocalDate.now());
+			int Sno = DBOrderManipulationDao.countOrders(empId, LocalDate.now());
 			Sno = Sno+1;
 			if(emptyFieldCheck(cashReg.getInfoPanel())) {
 			String fullname = cashReg.getFullName();
@@ -140,7 +139,7 @@ public class CashRegPanelController {
 			double comm = cashReg.getCommTxt();
 			double invoiceAmt = cashReg.getInvoiceAmtTxt();
 			OrdersModel order = new OrdersModel(Sno, fullname, address, city, refNo, recAcc, amt, comm, invoiceAmt, 0, empId);
-			if(DBOrderManipulationServ.insertOrder(order)) 
+			if(DBOrderManipulationDao.insertOrder(order)) 
 			{
 				cashReg.removeAll();
 				cashReg.initialize();
@@ -162,7 +161,7 @@ public class CashRegPanelController {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(DBOrderManipulationServ.selectOrderForReverse(empId, LocalDate.now())== null)
+			if(DBOrderManipulationDao.selectOrderForReverse(empId, LocalDate.now())== null)
 			{
 			ReceivedMoneyPanel pp = ReceivedMoneyPanel.getRecivedMoneyPanel(sessionId);
 			ReceivedMoneyPanelController ppc = ReceivedMoneyPanelController.getReceivedMoneyPanelController(sessionId);
@@ -186,7 +185,7 @@ public class CashRegPanelController {
 		int empId = SessionManager.getEmpIdBySession(sessionId);
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ArrayList<OrdersModel> paid = DBOrderManipulationServ.getPaid(empId, LocalDate.now());
+			ArrayList<OrdersModel> paid = DBOrderManipulationDao.getPaid(empId, LocalDate.now());
 			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 	            @Override
 	            protected Void doInBackground() throws Exception {
@@ -199,7 +198,7 @@ public class CashRegPanelController {
 	        Thread.sleep(500);
 	        SwingUtilities.invokeLater(() -> {
 			cashReg.deselectRow();
-			DBOrderManipulationServ.forwardOrders(empId, LocalDate.now());
+			DBOrderManipulationDao.forwardOrders(empId, LocalDate.now());
 			CashRegPanel cashReg = CashRegPanel.getCashRegPanel(sessionId);
 		    	cashReg.removeAll();
 				cashReg.initialize();
@@ -228,8 +227,8 @@ public class CashRegPanelController {
 	    public void mouseClicked(MouseEvent e) {
 	        int selectedRow = cashReg.getInstanceOfTable().getSelectedRow();
 	        Object SNo = cashReg.getInstanceOfTable().getValueAt(selectedRow, 0);
-	        OrdersModel toBeReversedList = DBOrderManipulationServ.selectOrderForReverse(empId, LocalDate.now());
-	        OrdersModel order = DBOrderManipulationServ.getOrderBySno((int) SNo, empId, LocalDate.now());
+	        OrdersModel toBeReversedList = DBOrderManipulationDao.selectOrderForReverse(empId, LocalDate.now());
+	        OrdersModel order = DBOrderManipulationDao.getOrderBySno((int) SNo, empId, LocalDate.now());
 
 	        if (toBeReversedList != null) {
 	            JOptionPane.showMessageDialog(null, "Finish your actions first.");
@@ -240,7 +239,7 @@ public class CashRegPanelController {
 	            case 0:
 	                int res = JOptionPane.showConfirmDialog(cashReg, "Do you want to cancel this order?", "Cancel Order", JOptionPane.YES_NO_OPTION);
 	                if (res == JOptionPane.YES_OPTION) {
-	                    if (DBOrderManipulationServ.setCancelled((int) SNo, empId, LocalDate.now()) > 0) {
+	                    if (DBOrderManipulationDao.setCancelled((int) SNo, empId, LocalDate.now()) > 0) {
 	                        cashReg.removeAll();
 	                        cashReg.initialize();
 	                        initialize();
@@ -263,7 +262,7 @@ public class CashRegPanelController {
 	                if (!order.isReversed()) {
 	                    int ans = JOptionPane.showConfirmDialog(cashReg, "Do you want to REVERSE this order?", "Reverse Order", JOptionPane.YES_NO_OPTION);
 	                    if (ans == JOptionPane.YES_OPTION) {
-	                        DBOrderManipulationServ.setToBeReverse((int) SNo, empId, LocalDate.now());
+	                        DBOrderManipulationDao.setToBeReverse((int) SNo, empId, LocalDate.now());
 	                        ReverseDenomPanel rdp = ReverseDenomPanel.getReverseDenomPanel(sessionId);
 	                        ReverseDenomPanelController rdpc = ReverseDenomPanelController.getReverseDenomPanelController(sessionId);
 	                        rdp.removeAll();
@@ -373,7 +372,7 @@ public class CashRegPanelController {
 	public void showOrdersInTable() {
 		String sessionId = SessionManager.getCurrSess();
 		int empId = SessionManager.getEmpIdBySession(sessionId);
-		List<OrdersModel> order = DBOrderManipulationServ.selectOrders(empId, LocalDate.now());
+		List<OrdersModel> order = DBOrderManipulationDao.selectOrders(empId, LocalDate.now());
 		
 		for(OrdersModel ord : order) 
 		{

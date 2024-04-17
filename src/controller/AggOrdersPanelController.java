@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import common.SessionManager;
+import dao.DBMoneyManipulationDao;
+import dao.DBOrderManipulationDao;
 import model.AggTransactions;
 import model.OrdersModel;
-import service.DBMoneyManipulationServ;
-import service.DBOrderManipulationServ;
 import view.AggOrdersPanel;
 
 public class AggOrdersPanelController {
@@ -46,7 +46,7 @@ public class AggOrdersPanelController {
 				{
 					aggOrd.clearTable();
 					String combValues = aggOrd.getComboBoxValue();
-					AggTransactions change = DBMoneyManipulationServ.getOrder(combValues, SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
+					AggTransactions change = DBMoneyManipulationDao.getOrder(combValues, SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
 					aggOrd.setRcvdTxt(change.getRcvd());
 					aggOrd.setTotalTxt(change.getTotal());
 					aggOrd.setCommTxt(change.getComm());
@@ -56,7 +56,7 @@ public class AggOrdersPanelController {
 					for (int i = 0; i < comboValues.length; i++) {
 					    intValues[i] = Integer.parseInt(comboValues[i]);
 					    
-					    OrdersModel ord = DBOrderManipulationServ.getOrderBySno
+					    OrdersModel ord = DBOrderManipulationDao.getOrderBySno
 					    		(intValues[i], SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
 					    showConsignationInTable(ord);
 					}

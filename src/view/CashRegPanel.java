@@ -11,8 +11,8 @@ import common.BackButton;
 import common.MyDocFilter;
 import common.OrderTable;
 import common.SessionManager;
+import dao.DBOrderManipulationDao;
 import model.OrdersModel;
-import service.DBOrderManipulationServ;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -409,7 +409,7 @@ public class CashRegPanel extends JPanel implements OrderTable<Object>{
 	}
 	public void setTotalTxt() 
 	{
-		totalTxt.setText(String.valueOf(DBOrderManipulationServ.getTotal(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now())));
+		totalTxt.setText(String.valueOf(DBOrderManipulationDao.getTotal(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now())));
 	}
 	public void setFinBtn() 
 	{
@@ -432,8 +432,8 @@ public class CashRegPanel extends JPanel implements OrderTable<Object>{
 	public void setSendBtn() 
 	{
 		int empId = SessionManager.getEmpIdBySession(SessionManager.getCurrSess());
-		OrdersModel toBeReversedList = DBOrderManipulationServ.selectOrderForReverse(empId, LocalDate.now());
-		ArrayList<OrdersModel> paidList = DBOrderManipulationServ.getPaid(empId, LocalDate.now());
+		OrdersModel toBeReversedList = DBOrderManipulationDao.selectOrderForReverse(empId, LocalDate.now());
+		ArrayList<OrdersModel> paidList = DBOrderManipulationDao.getPaid(empId, LocalDate.now());
 		if(!(paidList.isEmpty()) || toBeReversedList!=null) 
 		{
 			sendBtn.setEnabled(true);

@@ -15,10 +15,10 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
+import dao.DBEmpManipulationDao;
+import dao.DBOrderManipulationDao;
 import model.AggTransactions;
 import model.UserModel;
-import service.DBEmpManipulationServ;
-import service.DBOrderManipulationServ;
 import view.AdminAggOrdersPanel;
 
 public class AdminAggOrdersPanelController {
@@ -94,7 +94,7 @@ private AdminAggOrdersPanel aggOrderList;
 			aggOrderList.clearTable();
 			LocalDate date = aggOrderList.getDateTxt();
 			int id = aggOrderList.getIdTxt();
-			ArrayList<AggTransactions> ch= DBOrderManipulationServ.getAggAdminQuery(date, id);
+			ArrayList<AggTransactions> ch= DBOrderManipulationDao.getAggAdminQuery(date, id);
 			System.out.println("agg ord: " +ch.size());
 			for(AggTransactions change: ch) 
 			{
@@ -110,7 +110,7 @@ private AdminAggOrdersPanel aggOrderList;
 			public void mouseClicked(MouseEvent e) {
 				int rowSelected = aggOrderList.getInstanceOfTable().getSelectedRow();
 				Object Id = aggOrderList.getInstanceOfTable().getValueAt(rowSelected, 6);
-				UserModel user = DBEmpManipulationServ.selectUserByID((int)Id);
+				UserModel user = DBEmpManipulationDao.selectUserByID((int)Id);
 				aggOrderList.setEmpIdInf(user.getId());
 				aggOrderList.setEmpFnameInf(user.getFname());
 				aggOrderList.setEmpLnameInf(user.getLname());

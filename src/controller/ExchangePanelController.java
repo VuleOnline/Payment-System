@@ -14,10 +14,10 @@ import javax.swing.SwingUtilities;
 
 import common.DenomManipulationMethods;
 import common.SessionManager;
+import dao.DBMoneyManipulationDao;
+import dao.DBOrderManipulationDao;
 import model.AggTransactions;
 import model.OrdersModel;
-import service.DBMoneyManipulationServ;
-import service.DBOrderManipulationServ;
 import view.CashRegPanel;
 import view.Frame;
 import view.ReceivedMoneyPanel;
@@ -36,7 +36,7 @@ public class ExchangePanelController {
 	}
 	public void initialize() 
 	{
-		this.exchPanel.setTotal(DBOrderManipulationServ.getTotal(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now()));
+		this.exchPanel.setTotal(DBOrderManipulationDao.getTotal(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now()));
 		this.exchPanel.setRcvd(rcvdMon.getRcvd());
 		countChange();
 		this.exchPanel.addFocusListeneOnRcvdTxt(new AddFocusListeneOnRcvdTxt());
@@ -119,8 +119,8 @@ public class ExchangePanelController {
 		   
 		   else if (exchPanel.getChange() == 0.0) {
 			    DenomManipulationMethods.subFromDenom(exchPanel.getDenomPanelInstance(), empId);
-		    	AggOrdersInsertation(DBOrderManipulationServ.getUnpaidOrders(empId, LocalDate.now()));
-		    	int paidList = DBOrderManipulationServ.setPaid(empId, LocalDate.now());
+		    	AggOrdersInsertation(DBOrderManipulationDao.getUnpaidOrders(empId, LocalDate.now()));
+		    	int paidList = DBOrderManipulationDao.setPaid(empId, LocalDate.now());
 		    	if(paidList>0) {
 		    	CashRegPanel cr = CashRegPanel.getCashRegPanel(sessionId);
 		    	CashRegPanelController crc = CashRegPanelController.getCashRegPanelController(sessionId);
@@ -170,7 +170,7 @@ public class ExchangePanelController {
 				Math.ceil(total);
 			}
 		AggTransactions exchange = new AggTransactions(SNoBuilder.toString(), comm, total, rcvd, change, empId);
-		if(DBMoneyManipulationServ.insertBilling(exchange)) 
+		if(DBMoneyManipulationDao.insertBilling(exchange)) 
 		{
 			System.out.println("Unet kusur!");
 		}else System.out.println("Kusur nije unet");

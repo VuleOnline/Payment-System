@@ -1,4 +1,4 @@
-package service;
+package dao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -13,7 +13,7 @@ import model.AggTransactions;
 import model.OrdersModel;
 import utils.JDBCUtils;
 
-public class DBOrderManipulationServ {
+public class DBOrderManipulationDao {
 	
 	private static final String INSERTorder ="INSERT INTO orders(SNo, fullname, address, city, refNo, recAcc, amount, comm, total, state, id)"
 			+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

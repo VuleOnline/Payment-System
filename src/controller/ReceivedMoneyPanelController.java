@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 import common.DenomManipulationMethods;
 import common.SessionManager;
-import service.DBOrderManipulationServ;
+import dao.DBOrderManipulationDao;
 import view.CashRegPanel;
 import view.ExchangePanel;
 import view.Frame;
@@ -38,7 +38,7 @@ public class ReceivedMoneyPanelController {
 	public void initialize() 
 	{
 		this.rcvMon.addFocusListeneOnTxtFields(new AddFocusListeneOnTxtFields());
-		this.rcvMon.setTotal((DBOrderManipulationServ.getTotal(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now())));
+		this.rcvMon.setTotal((DBOrderManipulationDao.getTotal(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now())));
 		this.rcvMon.addActionLIstenerOnNextBtn(new AddActionLIstenerOnNextBtn());
 	}
 	class AddFocusListeneOnTxtFields implements FocusListener
@@ -80,9 +80,9 @@ public class ReceivedMoneyPanelController {
 			else if(rcvMon.getRcvd() == rcvMon.getTotal()) 
 			{
 				ExchangePanelController exchPanel = ExchangePanelController.getExchangePanelController(sessionId);
-				exchPanel.AggOrdersInsertation(DBOrderManipulationServ.getUnpaidOrders(empId, LocalDate.now()));
+				exchPanel.AggOrdersInsertation(DBOrderManipulationDao.getUnpaidOrders(empId, LocalDate.now()));
 				DenomManipulationMethods.addToDenom(rcvMon.getDenomPanelInstance(), empId);
-				int paidList = DBOrderManipulationServ.setPaid(empId, LocalDate.now());
+				int paidList = DBOrderManipulationDao.setPaid(empId, LocalDate.now());
 		    	if(paidList>0) 
 		    	{
 		    	CashRegPanel cr = CashRegPanel.getCashRegPanel(sessionId);

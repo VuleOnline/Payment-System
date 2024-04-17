@@ -1,4 +1,4 @@
-package service;
+package dao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -15,7 +15,7 @@ import model.OrdersModel;
 import model.SafeTransfers;
 import utils.JDBCUtils;
 
-public class DBMoneyManipulationServ {
+public class DBMoneyManipulationDao {
 
 	private static final String INSERTchange = "INSERT INTO aggregate_transactions (SNo, comm, total, recMoney, changes, id)VALUES "
 			+ "(?,?,?,?,?,?)"; 

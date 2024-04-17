@@ -1,4 +1,4 @@
-package service;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import utils.JDBCUtils;
 import model.UserModel;
 
-public class DBEmpManipulationServ {
+public class DBEmpManipulationDao {
 	
 	private static final String INSERTuser ="INSERT INTO users VALUES(NULL, ?, ?, ?, ?, ?)";
 	private static final String SELECTusers ="SELECT * FROM users";

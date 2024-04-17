@@ -12,8 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import dao.DBMoneyManipulationDao;
 import model.DenomEntryModel;
-import service.DBMoneyManipulationServ;
 
 
 public class DenomManipulationMethods {
@@ -108,7 +108,7 @@ public class DenomManipulationMethods {
 			int denom = Integer.parseInt(label);
 			int quantity = (int) fieldTxt;
 			DenomEntryModel denomEntry = new DenomEntryModel(denom, quantity, empId, LocalDate.now());
-			DBMoneyManipulationServ.subFromDenom(denomEntry);
+			DBMoneyManipulationDao.subFromDenom(denomEntry);
 		}
 	}
 	public static void addToDenom(JPanel panel, int empId) 
@@ -125,7 +125,7 @@ public class DenomManipulationMethods {
 			int denom = Integer.parseInt(label);
 			int quantity = (int) fieldTxt;
 			DenomEntryModel denomEntry = new DenomEntryModel(denom, quantity,empId, LocalDate.now());
-			DBMoneyManipulationServ.insertDenomEntry(denomEntry);
+			DBMoneyManipulationDao.insertDenomEntry(denomEntry);
 		}
 	
 	}
@@ -169,7 +169,7 @@ public class DenomManipulationMethods {
 			try {
 				double labelTxt = Double.parseDouble(label);
 				double res = labelTxt * fieldTxt;
-				double sum = DBMoneyManipulationServ.getDenomSum(labelTxt, empId, LocalDate.now());
+				double sum = DBMoneyManipulationDao.getDenomSum(labelTxt, empId, LocalDate.now());
 				if(sum < res) 
 				{
 					JOptionPane.showMessageDialog(null, "You dont have enough "+labelTxt+"'s in your cash register");

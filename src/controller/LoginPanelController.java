@@ -7,8 +7,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import common.SessionManager;
+import dao.DBEmpManipulationDao;
 import model.UserModel;
-import service.DBEmpManipulationServ;
 import view.AdminAggOrdersPanel;
 import view.AdminMenuPanel;
 import view.CashRegPanel;
@@ -66,7 +66,7 @@ public class LoginPanelController {
 			userInput.setUname(uname);
 			userInput.setPassword(pass);
 			
-			UserModel loggedUser = DBEmpManipulationServ.loginCheck(userInput);
+			UserModel loggedUser = DBEmpManipulationDao.loginCheck(userInput);
 			if(loggedUser!=null) 
 			{
 				String session = SessionManager.startSession(loggedUser.getId());

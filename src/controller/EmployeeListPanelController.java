@@ -12,8 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import dao.DBEmpManipulationDao;
 import model.UserModel;
-import service.DBEmpManipulationServ;
 import view.EmployeeListPanel;
 
 
@@ -66,7 +66,7 @@ public class EmployeeListPanelController {
 			}
 			
 			UserModel newEmp  = new UserModel(fname, lname, uname, pass, isAdmin);
-			if(DBEmpManipulationServ.insertUser(newEmp)) 
+			if(DBEmpManipulationDao.insertUser(newEmp)) 
 			{
 				empListPanel.clearFields();
 				empListPanel.clearTable();
@@ -92,7 +92,7 @@ public class EmployeeListPanelController {
 				empListPanel.clearFields();
 				return;
 			}
-			if(DBEmpManipulationServ.deleteUser(id)) 
+			if(DBEmpManipulationDao.deleteUser(id)) 
 			{
 				JOptionPane.showMessageDialog(null, "Employee deleted.");
 				empListPanel.clearTable();
@@ -120,7 +120,7 @@ public class EmployeeListPanelController {
 				empListPanel.clearFields();
 				return;
 			}
-			UserModel emp = DBEmpManipulationServ.selectUserByID(id);
+			UserModel emp = DBEmpManipulationDao.selectUserByID(id);
 			if(emp != null) 
 			{
 			empListPanel.setIdTxt(emp.getId());
@@ -166,7 +166,7 @@ public class EmployeeListPanelController {
 				return;
 			}
 			UserModel newEmpData = new UserModel(id, fname, lname, uname, pass, isAdmin);
-			if(DBEmpManipulationServ.updateUser(newEmpData)) 
+			if(DBEmpManipulationDao.updateUser(newEmpData)) 
 			{
 				JOptionPane.showMessageDialog(null, "Updated successfully");
 				empListPanel.setIdEdit();
@@ -192,7 +192,7 @@ public class EmployeeListPanelController {
 			if (!e.getValueIsAdjusting() && empListPanel.getInstanceOfTable().getSelectedRow() != -1) {
 			int selectedRow = empListPanel.getInstanceOfTable().getSelectedRow();
 			Object id = empListPanel.getInstanceOfTable().getValueAt(selectedRow, 0);
-			UserModel emp = DBEmpManipulationServ.selectUserByID((int)id);
+			UserModel emp = DBEmpManipulationDao.selectUserByID((int)id);
 			empListPanel.setIdTxt(emp.getId());
 			empListPanel.setFnameTxt(emp.getFname());
 			empListPanel.setLnameTxt(emp.getLname());
@@ -208,7 +208,7 @@ public class EmployeeListPanelController {
 	}
 	public void showAllEmps() 
 	{
-		List<UserModel> emps = DBEmpManipulationServ.selectUsers();
+		List<UserModel> emps = DBEmpManipulationDao.selectUsers();
 		for(UserModel emp : emps) 
 		{
 			empListPanel.showEmpInTable(emp.getId(), emp.getFname(), emp.getLname(), emp.getUname(), emp.getPassword(), emp.isAdmin());

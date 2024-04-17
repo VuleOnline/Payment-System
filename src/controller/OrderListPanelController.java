@@ -18,10 +18,10 @@ import java.util.Map;
 import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
 
+import dao.DBEmpManipulationDao;
+import dao.DBOrderManipulationDao;
 import model.OrdersModel;
 import model.UserModel;
-import service.DBEmpManipulationServ;
-import service.DBOrderManipulationServ;
 import view.OrderListPanel;
 
 public class OrderListPanelController {
@@ -98,7 +98,7 @@ public class OrderListPanelController {
 		public void mouseClicked(MouseEvent e) {
 			int rowSelected = orderList.getInstanceOfTable().getSelectedRow();
 			Object Id = orderList.getInstanceOfTable().getValueAt(rowSelected, 12);
-			UserModel user = DBEmpManipulationServ.selectUserByID((int)Id);
+			UserModel user = DBEmpManipulationDao.selectUserByID((int)Id);
 			orderList.setEmpIdInf(user.getId());
 			orderList.setEmpFnameInf(user.getFname());
 			orderList.setEmpLnameInf(user.getLname());
@@ -167,7 +167,7 @@ public class OrderListPanelController {
 		boolean rev = orderList.getRevCheck();
 		boolean forw = orderList.getForwardCheck();
 		boolean canc = orderList.getCancelCheck();
-		ArrayList<OrdersModel> orders= DBOrderManipulationServ.getAdminQueryOrders(date, sNo, id, all, rev, forw, canc);
+		ArrayList<OrdersModel> orders= DBOrderManipulationDao.getAdminQueryOrders(date, sNo, id, all, rev, forw, canc);
 		System.out.println("nalozi: " +orders.size());
 		for(OrdersModel ord: orders) 
 		{

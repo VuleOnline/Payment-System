@@ -10,9 +10,9 @@ import java.util.Map;
 
 import common.DenomManipulationMethods;
 import common.SessionManager;
+import dao.DBMoneyManipulationDao;
+import dao.DBOrderManipulationDao;
 import model.OrdersModel;
-import service.DBMoneyManipulationServ;
-import service.DBOrderManipulationServ;
 import view.CashRegPanel;
 import view.Frame;
 import view.ReverseDenomPanel;
@@ -37,7 +37,7 @@ public class ReverseDenomPanelController {
 	
 	public void initialize() 
 	{
-		OrdersModel order = DBOrderManipulationServ.selectOrderForReverse(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
+		OrdersModel order = DBOrderManipulationDao.selectOrderForReverse(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
 		System.out.println("iznos naloga: "+order.getInvoiceAmt());
 		this.revDenom.setTotal(order.getInvoiceAmt());
 		this.revDenom.addFocusListeneOnTxtFields(new AddFocusListeneOnTxtFields());
@@ -71,9 +71,9 @@ public class ReverseDenomPanelController {
 			int empId = SessionManager.getEmpIdBySession(sessionId);
 			if(revDenom.getRev()== 0.0) 
 			{
-				OrdersModel order = DBOrderManipulationServ.selectOrderForReverse(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
+				OrdersModel order = DBOrderManipulationDao.selectOrderForReverse(SessionManager.getEmpIdBySession(SessionManager.getCurrSess()), LocalDate.now());
 				 DenomManipulationMethods.subFromDenom(revDenom.getDenomPanelInstance(), empId);
-				 DBMoneyManipulationServ.reverseOrderInAgg(order);
+				 DBMoneyManipulationDao.reverseOrderInAgg(order);
 				 CashRegPanel cr = CashRegPanel.getCashRegPanel(sessionId);
 			     CashRegPanelController crc = CashRegPanelController.getCashRegPanelController(sessionId);
 			    	cr.removeAll();

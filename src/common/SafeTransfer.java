@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import dao.DBMoneyManipulationDao;
 import model.SafeTransfers;
-import service.DBMoneyManipulationServ;
 
 public class SafeTransfer {
 	
@@ -26,7 +26,7 @@ public class SafeTransfer {
 			int denom = Integer.parseInt(label);
 			int quantity = (int) fieldTxt;
 			SafeTransfers st = new SafeTransfers(denom, quantity, empId, LocalDate.now(), isWithdrawal);
-			DBMoneyManipulationServ.insertSafeTransfer(st);
+			DBMoneyManipulationDao.insertSafeTransfer(st);
 		}
 	}
 
