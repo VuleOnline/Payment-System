@@ -12,8 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JTextField;
@@ -33,7 +33,7 @@ public class OrderListPanelController {
 		this.orderList = orderList;
 		initialize();
 	}
-	private static Map<String, OrderListPanelController> cache = new HashMap<>();
+	private static Map<String, OrderListPanelController> cache = new ConcurrentHashMap<>();
 	 public static OrderListPanelController getOrderListPanelContr(String sessionId) 
 	    {
 		 if(!cache.containsKey(sessionId)) 

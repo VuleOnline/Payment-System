@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
 
@@ -27,7 +27,7 @@ public class ReceivedMoneyPanelController {
 		initialize();
 	}
 
-	private static Map<String, ReceivedMoneyPanelController> cache = new HashMap<>();
+	private static Map<String, ReceivedMoneyPanelController> cache = new ConcurrentHashMap<>();
 	public static ReceivedMoneyPanelController getReceivedMoneyPanelController(String sessionId) {
 		 if (!cache.containsKey(sessionId)) {
 			 ReceivedMoneyPanelController recMoneyContrPanel = new ReceivedMoneyPanelController(ReceivedMoneyPanel.getRecivedMoneyPanel(sessionId));

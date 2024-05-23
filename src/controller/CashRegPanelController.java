@@ -10,9 +10,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -52,7 +52,7 @@ public class CashRegPanelController {
 			showOrdersInTable();
 	    }
 
-	 private static Map<String, CashRegPanelController> cache = new HashMap<>();
+	 private static Map<String, CashRegPanelController> cache = new ConcurrentHashMap <>();
 
 	    public static CashRegPanelController getCashRegPanelController(String sessionId) {
 	        if (!cache.containsKey(sessionId)) {

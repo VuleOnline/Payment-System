@@ -4,9 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 import common.DenomManipulationMethods;
 import common.SafeTransfer;
@@ -23,7 +22,7 @@ public class CashRequisitionPanelController {
 		initialize();
 		
 	}
-	private static Map<String, CashRequisitionPanelController> cache = new HashMap<>();
+	private static Map<String, CashRequisitionPanelController> cache = new ConcurrentHashMap<>();
 	public static CashRequisitionPanelController getCashRequisitionPanelController(String sessionId) 
 	{
 		if(!cache.containsKey(sessionId)) 

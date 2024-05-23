@@ -4,9 +4,9 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -27,7 +27,7 @@ public class EmployeeListPanelController {
 		initialize();
 	
 	}
-	private static Map<String, EmployeeListPanelController> cache = new HashMap<>();
+	private static Map<String, EmployeeListPanelController> cache = new ConcurrentHashMap<>();
 	 public static EmployeeListPanelController getEmpListPanelContr(String sessionId) 
 	    {
 		 if(!cache.containsKey(sessionId)) 

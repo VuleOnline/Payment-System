@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import common.DenomManipulationMethods;
 import common.SessionManager;
@@ -26,7 +26,7 @@ public class ReverseDenomPanelController {
 		initialize();
 	}
 	
-	private static Map<String, ReverseDenomPanelController> cache = new HashMap<>();
+	private static Map<String, ReverseDenomPanelController> cache = new ConcurrentHashMap<>();
 	public static ReverseDenomPanelController getReverseDenomPanelController(String sessionId) {
 		 if (!cache.containsKey(sessionId)) {
 			 ReverseDenomPanelController revDenomPanelContr = new ReverseDenomPanelController(ReverseDenomPanel.getReverseDenomPanel(sessionId));

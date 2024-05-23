@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JTextField;
 
@@ -25,7 +26,7 @@ public class CashRegBalancePanelController {
 		initialize();
 	}
 	
-private static Map<String, CashRegBalancePanelController> cache = new HashMap<>();
+private static Map<String, CashRegBalancePanelController> cache = new ConcurrentHashMap<>();
 	
 	public static CashRegBalancePanelController getCashRegBalancePanelController(String sessionId)
 	{

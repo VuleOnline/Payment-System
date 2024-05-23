@@ -1,14 +1,14 @@
 package common;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
 
 public class SessionManager {
 	
-	private static Map<String, Integer> session  = new HashMap<>();
+	private static Map<String, Integer> session  = new ConcurrentHashMap<>();
 	private static ThreadLocal<String> currSession = new ThreadLocal<>();
 	
 	public static String startSession(int id) 

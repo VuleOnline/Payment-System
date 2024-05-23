@@ -10,8 +10,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JTextField;
 
@@ -30,7 +30,7 @@ private AdminAggOrdersPanel aggOrderList;
 		this.aggOrderList = aggOrderList;
 		initialize();
 	}
-	private static Map<String, AdminAggOrdersPanelController> cache = new HashMap<>();
+	private static Map<String, AdminAggOrdersPanelController> cache = new ConcurrentHashMap <>();
 	 public static AdminAggOrdersPanelController getAdminAggOrdersPanelContr(String sessionId) 
 	    {
 		 if(!cache.containsKey(sessionId)) 

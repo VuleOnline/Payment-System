@@ -3,8 +3,8 @@ package controller;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import common.SessionManager;
 import dao.DBMoneyManipulationDao;
@@ -21,7 +21,7 @@ public class AggOrdersPanelController {
 		this.aggOrd = aggOrd;;
 		initialize();
 	}
-	private static Map<String, AggOrdersPanelController> cache = new HashMap<>();
+	private static Map<String, AggOrdersPanelController> cache = new ConcurrentHashMap<>();
 	public static AggOrdersPanelController getAggOrdersPanelController(String sessionId) 
 	{
 		if(!cache.containsKey(sessionId)) 

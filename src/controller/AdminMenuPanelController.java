@@ -2,8 +2,8 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import common.SessionManager;
 import view.AdminAggOrdersPanel;
@@ -23,7 +23,7 @@ public class AdminMenuPanelController {
 		this.adminMenu.addActionListenerOnOrderList(new AddActionListenerOnOrderList());
 		this.adminMenu.addActionListenerOnAggOrdersBtn(new AddActionListenerOnAggOrdersBtn());
 	}
-	private static Map<String, AdminMenuPanelController> cache = new HashMap<>();
+	private static Map<String, AdminMenuPanelController> cache = new ConcurrentHashMap <>();
 	 public static AdminMenuPanelController getAdminMenuPanelContr(String sessionId) 
 	    {
 		 if(!cache.containsKey(sessionId)) 

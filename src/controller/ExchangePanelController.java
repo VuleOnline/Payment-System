@@ -6,8 +6,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -43,7 +43,7 @@ public class ExchangePanelController {
 		this.exchPanel.addFocusListeneOnTxtFields(new AddFocusListeneOnTxtFields());
 		this.exchPanel.addActionListenerOnFin(new AddActionListenerOnFin());
 	}
-	private static Map<String, ExchangePanelController> cache = new HashMap<>();
+	private static Map<String, ExchangePanelController> cache = new ConcurrentHashMap<>();
 	
 	public static ExchangePanelController getExchangePanelController(String sessionId) {
 		  if (!cache.containsKey(sessionId)) {

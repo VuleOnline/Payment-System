@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JOptionPane;
 
@@ -24,7 +24,7 @@ public class CashDepositionPanelController {
 		this.cashDepo = cashDepo;
 		initialize();
 	}
-	private static Map<String, CashDepositionPanelController> cache = new HashMap<>();
+	private static Map<String, CashDepositionPanelController> cache = new ConcurrentHashMap<>();
 	public static CashDepositionPanelController getCashDepositionPanelController(String sessionId) 
 	{
 		if(!cache.containsKey(sessionId)) 
