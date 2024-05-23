@@ -15,7 +15,7 @@ public class JDBCUtils {
 	Connection con = null;
 	String url ="jdbc:mysql://localhost:3306/payment";
 	String username = "root";
-	String pass ="vujadza456!";
+	String pass ="root!";
 
 
 	try {
