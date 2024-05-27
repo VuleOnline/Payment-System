@@ -80,9 +80,9 @@ public class ReceivedMoneyPanelController {
 			else if(rcvMon.getRcvd() == rcvMon.getTotal()) 
 			{
 				ExchangePanelController exchPanel = ExchangePanelController.getExchangePanelController(sessionId);
-				exchPanel.AggOrdersInsertation(DBOrderManipulationDao.getUnpaidOrders(empId, LocalDate.now()));
+				exchPanel.AggOrdersInsertation(DBOrderManipulationDao.getUnpaidOrForwOrCanc(0, empId, LocalDate.now()));
 				DenomManipulationMethods.addToDenom(rcvMon.getDenomPanelInstance(), empId);
-				int paidList = DBOrderManipulationDao.setPaid(empId, LocalDate.now());
+				int paidList = DBOrderManipulationDao.setPaidOrForwarded(1, 0, empId, LocalDate.now());
 		    	if(paidList>0) 
 		    	{
 		    	CashRegPanel cr = CashRegPanel.getCashRegPanel(sessionId);

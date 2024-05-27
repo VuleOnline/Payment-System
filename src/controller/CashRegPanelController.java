@@ -198,7 +198,7 @@ public class CashRegPanelController {
 	        Thread.sleep(500);
 	        SwingUtilities.invokeLater(() -> {
 			cashReg.deselectRow();
-			DBOrderManipulationDao.forwardOrders(empId, LocalDate.now());
+			DBOrderManipulationDao.setPaidOrForwarded(2, 1, empId, LocalDate.now());
 			CashRegPanel cashReg = CashRegPanel.getCashRegPanel(sessionId);
 		    	cashReg.removeAll();
 				cashReg.initialize();

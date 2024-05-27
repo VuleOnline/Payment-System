@@ -119,8 +119,8 @@ public class ExchangePanelController {
 		   
 		   else if (exchPanel.getChange() == 0.0) {
 			    DenomManipulationMethods.subFromDenom(exchPanel.getDenomPanelInstance(), empId);
-		    	AggOrdersInsertation(DBOrderManipulationDao.getUnpaidOrders(empId, LocalDate.now()));
-		    	int paidList = DBOrderManipulationDao.setPaid(empId, LocalDate.now());
+		    	AggOrdersInsertation(DBOrderManipulationDao.getUnpaidOrForwOrCanc(0, empId, LocalDate.now()));
+		    	int paidList = DBOrderManipulationDao.setPaidOrForwarded(1, 0, empId, LocalDate.now());
 		    	if(paidList>0) {
 		    	CashRegPanel cr = CashRegPanel.getCashRegPanel(sessionId);
 		    	CashRegPanelController crc = CashRegPanelController.getCashRegPanelController(sessionId);

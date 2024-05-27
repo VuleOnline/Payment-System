@@ -22,19 +22,46 @@ public class DBOrderManipulationDao {
 	private static final String COUNTorders = "SELECT COUNT(*) FROM orders WHERE id=? AND DATE(date_)=?";
 	private static final String GETtotal = "SELECT SUM(total) FROM orders WHERE state = 0 AND id = ?"
 			+ " AND DATE(date_) = ?";
-	private static final String SELECTunpaidOrders = "SELECT * FROM orders WHERE state=0 AND id = ? AND DATE(date_) = ?";
+	private static final String SELECTunpaidOrForwOrCanc = "SELECT * FROM orders WHERE state=? AND id = ? AND DATE(date_) = ?";
 	private static final String SELECTtoBeReversed = "SELECT * FROM orders WHERE reversed = 1 AND state = 1 AND id=? AND DATE(date_) = ?";
 	private static final String SELECTpaid = "SELECT * FROM orders WHERE state = 1 AND (reversed = 1 OR reversed = 0) AND id=? AND DATE(date_)= ?";
-	private static final String SELECTcancelled = "SELECT * FROM orders WHERE state = 3 AND id=? AND DATE(date_) = ?";
-	private static final String SELECTforwarded = "SELECT * FROM orders WHERE state = 2 AND id=? AND DATE(date_) = ?";
-	private static final String SETpaid = "UPDATE orders SET state = 1 WHERE state = 0 AND id=? AND DATE(date_) = ?";
-	private static final String SETforward = "UPDATE orders SET state = 2 WHERE state = 1 AND id=? AND DATE(date_) = ?";
+	private static final String SETpaidOrForw = "UPDATE orders SET state = ? WHERE state = ? AND id=? AND DATE(date_) = ?";
 	private static final String SETcancelled = "UPDATE orders SET state = 3 WHERE state = 0 AND SNo=? AND id=? AND DATE(date_) = ?";
 	private static final String SETtoBeReversed = "UPDATE orders SET reversed = 1, state = 1 WHERE reversed = 0 AND state = 2 AND SNo=? AND id=? AND DATE(date_) = ?";
 	private static final String SELECTreversed = "SELECT * FROM orders WHERE state = 2 AND reversed =1 AND id=? AND DATE(date_) = ?";
 	
 	
 
+	 private static OrdersModel mapToOrdersModel(ResultSet rs) throws SQLException {
+	        int SNo = rs.getInt("SNo");
+	        String fullname = rs.getString("fullname");
+	        String address = rs.getString("address");
+	        String city = rs.getString("city");
+	        String refNo = rs.getString("refNo");
+	        String recAcc = rs.getString("recAcc");
+	        double amount = rs.getDouble("amount");
+	        double comm = rs.getDouble("comm");
+	        double total = rs.getDouble("total");
+	        LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
+	        int state = rs.getInt("state");
+	        boolean reversed = rs.getBoolean("reversed");
+	        int empid = rs.getInt("id");
+	        return new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm,
+	                total, date_, state, reversed, empid);
+	    }
+	 
+	 private static AggTransactions mapToAggTransactions(ResultSet rs) throws SQLException {
+		    String Sno = rs.getString("SNo");
+		    Double comm = rs.getDouble("comm");
+		    Double total = rs.getDouble("total");
+		    Double recMoney = rs.getDouble("recMoney");
+		    Double change = rs.getDouble("changes");
+		    String reversed = rs.getString("reversed");
+		    int empid = rs.getInt("id");
+		    LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
+		    return new AggTransactions(Sno, comm, total, recMoney, change, reversed, empid, date_);
+		}
+	 
 	public static boolean insertOrder(OrdersModel order) 
 
 	{
@@ -57,7 +84,6 @@ public class DBOrderManipulationDao {
 			rows = pst.executeUpdate()>0;
 		}catch(SQLException e) 
 		{
-			System.out.println("Order insertation failed.");
 			e.printStackTrace();
 		}
 		return rows;
@@ -74,22 +100,8 @@ public class DBOrderManipulationDao {
 			ResultSet rs = pst.executeQuery();
 				while(rs.next()) 
 				{
-					int SNo =rs.getInt("SNo");
-					String fullname = rs.getString("fullname");
-					String address = rs.getString("address");
-					String city = rs.getString("city");
-					String refNo = rs.getString("refNo");
-					String recAcc = rs.getString("recAcc");
-					Double amount = rs.getDouble("amount");
-					Double comm = rs.getDouble("comm");
-					Double total = rs.getDouble("total");
-					LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-					int state = rs.getInt("state");
-					boolean reversed = rs.getBoolean("reversed");
-					int empid  = rs.getInt("id");
-					OrdersModel order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-							total,  date_, state,  reversed, empid);
-					orders.add(order);
+					OrdersModel order = mapToOrdersModel(rs);
+	                orders.add(order);
 				}
 			}catch(SQLException e) 
 			{
@@ -128,23 +140,9 @@ public class DBOrderManipulationDao {
 			pst.setInt(2, id);
 			pst.setDate(3, Date.valueOf(date));
 			ResultSet rs = pst.executeQuery();
-				while(rs.next()) 
+				if(rs.next()) 
 				{
-					int SNo =rs.getInt("SNo");
-					String fullname = rs.getString("fullname");
-					String address = rs.getString("address");
-					String city = rs.getString("city");
-					String refNo = rs.getString("refNo");
-					String recAcc = rs.getString("recAcc");
-					Double amount = rs.getDouble("amount");
-					Double comm = rs.getDouble("comm");
-					Double total = rs.getDouble("total");
-					LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-					int state = rs.getInt("state");
-					boolean reversed = rs.getBoolean("reversed");
-					int empid  = rs.getInt("id");
-					order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-							total,  date_, state,  reversed, empid);
+					order = mapToOrdersModel(rs);
 				}
 			}catch(SQLException e) 
 			{
@@ -172,33 +170,20 @@ public class DBOrderManipulationDao {
 		}
 		return totalSum;
 	}
-	public static ArrayList<OrdersModel> getUnpaidOrders(int id, LocalDate date)
+	public static ArrayList<OrdersModel> getUnpaidOrForwOrCanc(int state, int id, LocalDate date)
 	{
 		ArrayList<OrdersModel> orders = new ArrayList<>();
 		try
 		(Connection con = JDBCUtils.getConnection();
-		PreparedStatement pst = con.prepareStatement(SELECTunpaidOrders)){ 
-			pst.setInt(1, id);
-			pst.setDate(2, Date.valueOf(date));
+		PreparedStatement pst = con.prepareStatement(SELECTunpaidOrForwOrCanc)){ 
+			pst.setInt(1, state);
+			pst.setInt(2, id);
+			pst.setDate(3, Date.valueOf(date));
 			ResultSet rs = pst.executeQuery();
 			while(rs.next()) 
 			{
-				int SNo =rs.getInt("SNo");
-				String fullname = rs.getString("fullname");
-				String address = rs.getString("address");
-				String city = rs.getString("city");
-				String refNo = rs.getString("refNo");
-				String recAcc = rs.getString("recAcc");
-				Double amount = rs.getDouble("amount");
-				Double comm = rs.getDouble("comm");
-				Double total = rs.getDouble("total");
-				LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-				int state = rs.getInt("state");
-				boolean reversed = rs.getBoolean("reversed");
-				int empid  = rs.getInt("id");
-				OrdersModel order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-						total,  date_, state,  reversed, empid);
-				orders.add(order);
+				OrdersModel order = mapToOrdersModel(rs);
+	            orders.add(order);
 			}
 		}catch(SQLException e) 
 		{
@@ -218,131 +203,32 @@ public class DBOrderManipulationDao {
 			ResultSet rs = pst.executeQuery();
 			while(rs.next()) 
 			{
-				int SNo =rs.getInt("SNo");
-				String fullname = rs.getString("fullname");
-				String address = rs.getString("address");
-				String city = rs.getString("city");
-				String refNo = rs.getString("refNo");
-				String recAcc = rs.getString("recAcc");
-				Double amount = rs.getDouble("amount");
-				Double comm = rs.getDouble("comm");
-				Double total = rs.getDouble("total");
-				LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-				int state = rs.getInt("state");
-				boolean reversed = rs.getBoolean("reversed");
-				int empid  = rs.getInt("id");
-				OrdersModel order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-						total, date_, state, reversed, empid);
-				paidOrders.add(order);
+				OrdersModel order = mapToOrdersModel(rs);
+	            paidOrders.add(order);
 			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
-			System.out.println("Paid orders catch block");
 		}
 		return paidOrders;
 	}
-	public static ArrayList<OrdersModel> getCancelled(int id, LocalDate date) 
-	{
-		ArrayList<OrdersModel> cancelledOrders = new ArrayList<>();
-		try(
-			Connection con = JDBCUtils.getConnection();
-				PreparedStatement pst = con.prepareStatement(SELECTcancelled)){
-			pst.setInt(1, id);
-			pst.setDate(2, Date.valueOf(date));
-			ResultSet rs = pst.executeQuery();
-			while(rs.next()) 
-			{
-				int SNo =rs.getInt("SNo");
-				String fullname = rs.getString("fullname");
-				String address = rs.getString("address");
-				String city = rs.getString("city");
-				String refNo = rs.getString("refNo");
-				String recAcc = rs.getString("recAcc");
-				Double amount = rs.getDouble("amount");
-				Double comm = rs.getDouble("comm");
-				Double total = rs.getDouble("total");
-				LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-				int state = rs.getInt("state");
-				boolean reversed = rs.getBoolean("reversed");
-				int empid  = rs.getInt("id");
-				OrdersModel order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-						total,  date_, state,  reversed, empid);
-				cancelledOrders.add(order);
-			}
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-			System.out.println("Cancelled orders catch block");
-		}
-		return cancelledOrders;
-	}
-	public static ArrayList<OrdersModel> getForwarded(int id, LocalDate date) 
-	{
-		ArrayList<OrdersModel> forwardedOrders = new ArrayList<>();
-		try(
-			Connection con = JDBCUtils.getConnection();
-				PreparedStatement pst = con.prepareStatement(SELECTforwarded)){
-			pst.setInt(1, id);
-			pst.setDate(2, Date.valueOf(date));
-			ResultSet rs = pst.executeQuery();
-			while(rs.next()) 
-			{
-				int SNo =rs.getInt("SNo");
-				String fullname = rs.getString("fullname");
-				String address = rs.getString("address");
-				String city = rs.getString("city");
-				String refNo = rs.getString("refNo");
-				String recAcc = rs.getString("recAcc");
-				Double amount = rs.getDouble("amount");
-				Double comm = rs.getDouble("comm");
-				Double total = rs.getDouble("total");
-				LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-				int state = rs.getInt("state");
-				boolean reversed = rs.getBoolean("reversed");
-				int empid  = rs.getInt("id");
-				OrdersModel order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-						total, date_, state, reversed, empid);
-				forwardedOrders.add(order);
-			}
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-			System.out.println("Forwarded orders catch block");
-		}
-		return forwardedOrders;
-	}
-	public static int setPaid(int id, LocalDate date) 
+
+	public static int setPaidOrForwarded(int newState, int currState, int id, LocalDate date) 
 	{
 		int row =0;
 		try(
 			Connection con = JDBCUtils.getConnection();
-				PreparedStatement pst = con.prepareStatement(SETpaid)){
-			pst.setInt(1, id);
-			pst.setDate(2, Date.valueOf(date));
+				PreparedStatement pst = con.prepareStatement(SETpaidOrForw)){
+			pst.setInt(1, newState);
+			pst.setInt(2, currState);
+			pst.setInt(3, id);
+			pst.setDate(4, Date.valueOf(date));
 			row = pst.executeUpdate();
-			System.out.println("no of paid: " +row);
 		}catch(Exception e)
 		{
 			e.printStackTrace();
-			System.out.println("Switch paid orders catch block");
 		}
 		return row;
-	}
-	public static void forwardOrders(int sNo, LocalDate date) 
-	{
-		try(
-			Connection con = JDBCUtils.getConnection();
-				PreparedStatement pst = con.prepareStatement(SETforward)){
-			pst.setInt(1, sNo);
-			pst.setDate(2, Date.valueOf(date));
-			pst.executeUpdate();
-		}catch(Exception e)
-		{
-			System.out.println("Forward orders catch block");
-			e.printStackTrace();
-			
-		}
 	}
 	public static OrdersModel selectOrderForReverse(int id, LocalDate date) 
 	{
@@ -354,23 +240,9 @@ public class DBOrderManipulationDao {
 			pst.setInt(1, id);
 			pst.setDate(2, Date.valueOf(date));
 			ResultSet rs = pst.executeQuery();
-				while(rs.next()) 
+				if(rs.next()) 
 				{
-					int SNo =rs.getInt("SNo");
-					String fullname = rs.getString("fullname");
-					String address = rs.getString("address");
-					String city = rs.getString("city");
-					String refNo = rs.getString("refNo");
-					String recAcc = rs.getString("recAcc");
-					Double amount = rs.getDouble("amount");
-					Double comm = rs.getDouble("comm");
-					Double total = rs.getDouble("total");
-					LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-					int state = rs.getInt("state");
-					boolean reversed = rs.getBoolean("reversed");
-					int empid  = rs.getInt("id");
-					order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-							total, date_, state, reversed, empid);
+					order = mapToOrdersModel(rs);
 				}
 			}catch(SQLException e) 
 			{
@@ -390,7 +262,6 @@ public class DBOrderManipulationDao {
 			row = pst.executeUpdate();
 		}catch(Exception e)
 		{
-			System.out.println("Set cancelled order catch block");
 			e.printStackTrace();
 			
 		}
@@ -415,17 +286,8 @@ public class DBOrderManipulationDao {
 			ResultSet rs = pst.executeQuery();
 				while(rs.next()) 
 				{
-					String Sno =rs.getString("SNo");
-					Double comm = rs.getDouble("comm");
-					Double total = rs.getDouble("total");
-					Double recMoney = rs.getDouble("recMoney");
-					Double change = rs.getDouble("changes");
-					String reversed = rs.getString("reversed");
-					int empid  = rs.getInt("id");
-					LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-					
-					AggTransactions order = new AggTransactions(Sno, comm, total, recMoney, change, reversed, empid, date_);
-					orders.add(order);
+					AggTransactions order = mapToAggTransactions(rs);
+		            orders.add(order);
 				}
 			}catch(SQLException e) 
 			{
@@ -473,22 +335,8 @@ public class DBOrderManipulationDao {
 			ResultSet rs = pst.executeQuery();
 				while(rs.next()) 
 				{
-					int SNo =rs.getInt("SNo");
-					String fullname = rs.getString("fullname");
-					String address = rs.getString("address");
-					String city = rs.getString("city");
-					String refNo = rs.getString("refNo");
-					String recAcc = rs.getString("recAcc");
-					Double amount = rs.getDouble("amount");
-					Double comm = rs.getDouble("comm");
-					Double total = rs.getDouble("total");
-					LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-					int state = rs.getInt("state");
-					boolean reversed = rs.getBoolean("reversed");
-					int empid  = rs.getInt("id");
-					OrdersModel order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-							total, date_, state, reversed, empid);
-					orders.add(order);
+					OrdersModel order = mapToOrdersModel(rs);
+		            orders.add(order);
 				}
 			}catch(SQLException e) 
 			{
@@ -505,10 +353,8 @@ public class DBOrderManipulationDao {
 			pst.setInt(2, id);
 			pst.setDate(3, Date.valueOf(date));
 			row = pst.executeUpdate();
-			System.out.println("no of reversed: " +row);
 		}catch(Exception e)
 		{
-			System.out.println("Set reverse order catch block");
 			e.printStackTrace();
 			
 		}
@@ -525,26 +371,11 @@ public class DBOrderManipulationDao {
 			ResultSet rs = pst.executeQuery();
 			while(rs.next()) 
 			{
-				int SNo =rs.getInt("SNo");
-				String fullname = rs.getString("fullname");
-				String address = rs.getString("address");
-				String city = rs.getString("city");
-				String refNo = rs.getString("refNo");
-				String recAcc = rs.getString("recAcc");
-				Double amount = rs.getDouble("amount");
-				Double comm = rs.getDouble("comm");
-				Double total = rs.getDouble("total");
-				LocalDateTime date_ = rs.getTimestamp("date_").toLocalDateTime();
-				int state = rs.getInt("state");
-				boolean reversed = rs.getBoolean("reversed");
-				int empid  = rs.getInt("id");
-				OrdersModel order = new OrdersModel(SNo, fullname, address, city, refNo, recAcc, amount, comm, 
-						total, date_, state, reversed, empid);
-				revOrders.add(order);
+				 OrdersModel order = mapToOrdersModel(rs);
+		            revOrders.add(order);
 			}
 		}catch(Exception e)
 		{
-			System.out.println("Paid orders catch block");
 			e.printStackTrace();
 			
 		}
