@@ -69,7 +69,7 @@ public class Frame extends JFrame {
 		
 	}
 	
-	public void showCard(String cardName) {
+	public synchronized void showCard(String cardName) {
 		cardLayout.show(cardPanel, cardName);
 	    panelHistory.add(cardName);
 		
@@ -77,24 +77,26 @@ public class Frame extends JFrame {
 	}
 
 
-	public void showPreviousCard() 
-	{
-		if (panelHistory.size() > 1) {
-			 int last = panelHistory.size() - 2;
-			 if(panelHistory.get(last).equals("rcvdMoneyPanel") || panelHistory.get(last).equals("revDenomPanel") || panelHistory.get(last).equals("exchangePanel"))	 
-			 {
-				 panelHistory.remove(last);
-				 panelHistory.remove(last);
-				 panelHistory.remove(panelHistory.size() - 1);
-			 }else 
-			 {
-				 panelHistory.remove(panelHistory.size() - 1);
-			 }
-			 String previousPanel = panelHistory.get(panelHistory.size() - 1);
-		     cardLayout.show(cardPanel, previousPanel);
-		     cardPanel.revalidate();
-		     cardPanel.repaint();
-		    
+
+	public synchronized void showPreviousCard() {
+	    if (panelHistory.size() > 1) {
+	        int last = panelHistory.size() - 2;
+	        String previousPanel = panelHistory.get(last);
+
+	        while (last > 0 && (previousPanel.equals("rcvdMoneyPanel") ||
+	                            previousPanel.equals("revDenomPanel") ||
+	                            previousPanel.equals("exchangePanel"))) {
+	            panelHistory.remove(last);
+	            last--;
+	            previousPanel = panelHistory.get(last);
+	        }
+
+	        panelHistory.remove(panelHistory.size() - 1);
+
+	        previousPanel = panelHistory.get(panelHistory.size() - 1);
+	        cardLayout.show(cardPanel, previousPanel);
+	        cardPanel.revalidate();
+	        cardPanel.repaint();
 	    }
 	
 	}
