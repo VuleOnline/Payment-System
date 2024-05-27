@@ -74,7 +74,7 @@ private static Map<String, CashRegBalancePanelController> cache = new Concurrent
 			String label = labelList.get(value);
 			int denom = Integer.parseInt(label);
 			DenomEntryModel denom_obj = new DenomEntryModel(denom, empId, LocalDate.now());
-			int denom_quant = DBMoneyManipulationDao.geDenomQuant(denom_obj);
+			int denom_quant = DBMoneyManipulationDao.getDenomQuant(denom_obj);
 			field.setText(String.valueOf(denom_quant));
 		}
 					
