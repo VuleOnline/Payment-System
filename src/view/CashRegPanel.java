@@ -21,8 +21,8 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
@@ -67,7 +67,7 @@ public class CashRegPanel extends JPanel implements OrderTable<Object>{
 	        initialize();
 	       
 	}
-	 private static Map<String, CashRegPanel> cache = new HashMap<>();
+	 private static Map<String, CashRegPanel> cache = new ConcurrentHashMap<>();
 
 	    public static CashRegPanel getCashRegPanel(String sessionId) {
 	        if (!cache.containsKey(sessionId)) {
@@ -288,10 +288,10 @@ public class CashRegPanel extends JPanel implements OrderTable<Object>{
 	{
 		return infoPanel;
 	}
-	public JPanel getCashRegPanel() 
+	/*public JPanel getCashRegPanel() 
 	{
 		return this;
-	}
+	}*/
 	
 	
 	public void setAmtTxt(double amtText) 

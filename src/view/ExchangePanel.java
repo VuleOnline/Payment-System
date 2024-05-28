@@ -5,8 +5,8 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -59,7 +59,7 @@ public class ExchangePanel extends JPanel implements TxtFieldListener{
 		initialize();
 	}
 	
-	private static Map<String, ExchangePanel> cache = new HashMap<>();
+	private static Map<String, ExchangePanel> cache = new ConcurrentHashMap<>();
 
     public static ExchangePanel getExchangePanel(String sessionId) {
         if (!cache.containsKey(sessionId)) {

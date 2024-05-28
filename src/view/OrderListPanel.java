@@ -18,8 +18,8 @@ import common.OrderTable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -78,7 +78,7 @@ public class OrderListPanel extends JPanel implements OrderTable<Object>{
 	public OrderListPanel() {
 			initialize();
 		}
-	private static Map<String, OrderListPanel> cache = new HashMap<>();
+	private static Map<String, OrderListPanel> cache = new ConcurrentHashMap<>();
 	 public static OrderListPanel getOrderListPanel(String sessionId) 
 	    {
 		 if(!cache.containsKey(sessionId)) 

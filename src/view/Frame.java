@@ -3,13 +3,13 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import common.SessionManager;
 import controller.LoginPanelController;
 
 
@@ -20,14 +20,12 @@ public class Frame extends JFrame {
 	private static JPanel cardPanel;
 	private LoginPanel loginPanel;
 	private static Frame instance;
-	private List<String> panelHistory;
 	
 	
     
 	 public Frame() {
 		 	instance=this;
-	        initialize();
-	       
+	       initialize();
 	    }
 
 	    public static Frame getInstance() {
@@ -58,8 +56,6 @@ public class Frame extends JFrame {
 		cardPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		add(cardPanel, BorderLayout.CENTER);
 		
-		
-		panelHistory = new ArrayList<>();
 		setVisible(true);
 		
 		
@@ -69,16 +65,25 @@ public class Frame extends JFrame {
 		
 	}
 	
-	public synchronized void showCard(String cardName) {
+	public void showCard(String cardName) {
+		 String currSess = SessionManager.getCurrSess();
+	
+		if (currSess != null) {
 		cardLayout.show(cardPanel, cardName);
+		List<String> panelHistory = SessionManager.getPanelHistoryBySession(SessionManager.getCurrSess());
 	    panelHistory.add(cardName);
+		}
+		else{
+			cardLayout.show(cardPanel, cardName);
+		}
 		
 		
 	}
 
 
 
-	public synchronized void showPreviousCard() {
+	public void showPreviousCard() {
+		List<String> panelHistory = SessionManager.getPanelHistoryBySession(SessionManager.getCurrSess());
 	    if (panelHistory.size() > 1) {
 	        int last = panelHistory.size() - 2;
 	        String previousPanel = panelHistory.get(last);

@@ -7,8 +7,8 @@ import controller.AdminMenuPanelController;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 
@@ -26,7 +26,7 @@ public class AdminMenuPanel extends JPanel {
 	private AdminMenuPanel() {
 		initialize();
 	}
-	private static Map<String, AdminMenuPanel> cache = new HashMap<>();
+	private static Map<String, AdminMenuPanel> cache = new ConcurrentHashMap<>();
 	
 	 public static AdminMenuPanel getAdminMenuPanel(String sessionId) 
 	    {

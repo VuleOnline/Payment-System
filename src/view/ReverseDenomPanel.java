@@ -3,8 +3,8 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -59,7 +59,7 @@ public class ReverseDenomPanel extends JPanel implements TxtFieldListener{
 		initialize();
 
 	}
-	private static Map<String, ReverseDenomPanel> cache = new HashMap<>();
+	private static Map<String, ReverseDenomPanel> cache = new ConcurrentHashMap<>();
 	public static ReverseDenomPanel getReverseDenomPanel(String sessionId) 
 	{
 		if(!cache.containsKey(sessionId)) 

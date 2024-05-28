@@ -11,8 +11,8 @@ import common.TxtFieldListener;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -62,7 +62,7 @@ public class ReceivedMoneyPanel extends JPanel implements TxtFieldListener{
 		
 		initialize();
 	}
-	private static Map<String, ReceivedMoneyPanel> cache = new HashMap<>();
+	private static Map<String, ReceivedMoneyPanel> cache = new ConcurrentHashMap<>();
 	public static ReceivedMoneyPanel getRecivedMoneyPanel(String sessionId) 
 	{
 		if(!cache.containsKey(sessionId)) 

@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -55,7 +55,7 @@ public CashRequisitionPanel() {
 		
 		initialize();
 	}
-	private static Map<String, CashRequisitionPanel> cache = new HashMap<>();
+	private static Map<String, CashRequisitionPanel> cache = new ConcurrentHashMap<>();
 	public static CashRequisitionPanel getCashRequisitionPanel(String sessionId) 
 	{
 		if(!cache.containsKey(sessionId)) 

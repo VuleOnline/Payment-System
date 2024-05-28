@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -61,7 +61,7 @@ public class CashRegBalancePanel extends JPanel {
 		
 		initialize();
 	}
-	private static Map<String, CashRegBalancePanel> cache = new HashMap<>();
+	private static Map<String, CashRegBalancePanel> cache = new ConcurrentHashMap<>();
 	private JTextField sufTxt;
 	
 	public static CashRegBalancePanel getCashRegBalancePanel(String sessionId)

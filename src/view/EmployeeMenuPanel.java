@@ -7,8 +7,8 @@ import controller.EmployeeMenuPanelController;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 
@@ -27,7 +27,7 @@ public class EmployeeMenuPanel extends JPanel {
 		initialize();
 	}
 	
-	private static Map<String, EmployeeMenuPanel> cache = new HashMap<>();
+	private static Map<String, EmployeeMenuPanel> cache = new ConcurrentHashMap<>();
 
     public static EmployeeMenuPanel getEmployeeMenuPanel(String sessionId) {
         if (!cache.containsKey(sessionId)) {

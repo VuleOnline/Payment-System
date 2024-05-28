@@ -14,8 +14,8 @@ import common.MyDocFilter;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -53,7 +53,7 @@ public class EmployeeListPanel extends JPanel {
 	private EmployeeListPanel() {
 		initialize();
 	}
-	private static Map<String, EmployeeListPanel> cache = new HashMap<>();
+	private static Map<String, EmployeeListPanel> cache = new ConcurrentHashMap<>();
 	 public static EmployeeListPanel getEmpListPanel(String sessionId) 
 	    {
 		 if(!cache.containsKey(sessionId)) 

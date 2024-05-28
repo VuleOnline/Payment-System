@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -57,7 +57,7 @@ public class CashDepositionPanel extends JPanel implements TxtFieldListener{
 	}
 	
 	
-	private static Map<String, CashDepositionPanel> cache = new HashMap<>();
+	private static Map<String, CashDepositionPanel> cache = new ConcurrentHashMap<>();
 	public static CashDepositionPanel getCashDepositionPanel(String sessionId) 
 	{
 		if(!cache.containsKey(sessionId)) 

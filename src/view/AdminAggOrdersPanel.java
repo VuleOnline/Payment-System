@@ -10,8 +10,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -62,7 +62,7 @@ public class AdminAggOrdersPanel extends JPanel implements OrderTable<Object> {
 	public AdminAggOrdersPanel() {
 		initialize();
 	}
-private static Map<String, AdminAggOrdersPanel> cache = new HashMap<>();
+private static Map<String, AdminAggOrdersPanel> cache = new ConcurrentHashMap<>();
  public static AdminAggOrdersPanel getAdminAggOrdersPanel(String sessionId) 
     {
 	 if(!cache.containsKey(sessionId)) 

@@ -3,8 +3,8 @@ package view;
 import java.awt.Dimension;
 import java.awt.event.ItemListener;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,7 +46,7 @@ public class AggOrdersPanel extends JPanel implements OrderTable<Object>{
 		initialize();
 	}
 	
-	 private static Map<String, AggOrdersPanel> cache = new HashMap<>();
+	 private static Map<String, AggOrdersPanel> cache = new ConcurrentHashMap<>();
 
 	    public static AggOrdersPanel getAggOrdersPanel(String sessionId) {
 	        if (!cache.containsKey(sessionId)) {
